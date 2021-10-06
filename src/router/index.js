@@ -1,11 +1,48 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import routerInterceptor from './interceptor'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Index',
+    component: () => import('@/views/index/Index'),
+    redirect: '/projectList',
+    children: [
+      {
+        path: 'projectList',
+        name: 'ProjectList',
+        meta: {
+          title: '项目列表'
+        },
+        component: () => import('@/views/index/ProjectList')
+      },{
+        path: 'todo',
+        name: 'Todo',
+        meta: {
+          title: '待办事项'
+        },
+        component: () => import('@/views/index/Todo')
+      },{
+        path: 'message',
+        name: 'Message',
+        meta: {
+          title: '消息中心'
+        },
+        component: () => import('@/views/index/Message')
+      },{
+        path: 'me',
+        name: 'Me',
+        meta: {
+          title: '我的'
+        },
+        component: () => import('@/views/index/Me')
+      }, 
+    ]
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/Login.vue')
   },
   {
     path: '/about',
@@ -21,5 +58,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach(routerInterceptor)
 
 export default router

@@ -1,12 +1,15 @@
 <template>
-  <router-view/>
+  <p>projects List</p>
 </template>
+
 <script>
 export default {
-  components: {
-  },
   created() {
-    console.log('app.vue')
+    console.log('projectList.vue')
   }
 }
 </script>
+
+<style>
+
+</style>
