@@ -1,13 +1,33 @@
 <!--待办事项-->
-<template>
-  <p>todo</p>
-</template>
+<script setup>
+//import { ref } from 'vue'
 
-<script>
-export default {
+import { useCalendar } from '@/service/common'
 
+const { getToDoList } = useCalendar()
+
+const formatter = (day) => {
+  return {
+    ...day,
+    bottomInfo: '2'
+  }
 }
 </script>
+
+<template>
+  <div>
+    <van-calendar
+      title="日历"
+      :show-title="false"
+      :show-subtitle="false"
+      :poppable="false"
+      :show-confirm="false"
+      :style="{ height: '400px' }"
+      :formatter="formatter"
+      @month-show="getToDoList"
+    />
+  </div>
+</template>
 
 <style>
 

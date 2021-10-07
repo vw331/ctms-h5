@@ -19,7 +19,9 @@ import {
   Image,
   Loading,
   Dialog,
-  List
+  List,
+  PullRefresh,
+  Calendar
 } from 'vant';
 
 export default {
@@ -45,7 +47,9 @@ export default {
       Image,
       Loading,
       Dialog,
-      List
+      List,
+      PullRefresh,
+      Calendar
     ].forEach(component => {
       app.use(component)
     })

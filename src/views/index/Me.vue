@@ -11,16 +11,16 @@
         />
         <div class="p-2 flex-1">
           <p class="text-lg">{{userInfo.name}}</p>
-          <p class="text-xs">{{userInfo.deptName}}</p>
+          <p class="text-xs">{{userInfo.phone}}</p>
         </div>
       </div>
     </div>
 
     <van-cell-group>
+      <van-cell title="单位" :value="userInfo.deptName" />
       <van-cell title="邮箱" :value="userInfo.email" />
       <van-cell title="职位" :value="userInfo.postName" />
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" />
+      <van-cell title="上一次登录" :value="userInfo.lastLoginTime" />
       <van-cell title="单元格" value="内容" />
       <van-cell title="单元格" value="内容" />
       <van-cell title="单元格" value="内容" />

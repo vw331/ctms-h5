@@ -1,24 +1,20 @@
 import request from '@/core/axios'
 import { ref } from 'vue'
-/**
- * 用户消息
- */
-export const useMessage = () => {
+
+export const useProject = () => {
+
   const list = ref([]);
   const loading = ref(false);
   const finished = ref(false);
   const refreshing = ref(false);
   const error = ref(false);
-  const status = 0
   const size = 20
   let current = 0
 
-  const getMessage = async (params) => {
+  const getProjectList = async (params) => {
+
     try {
-      //loading.value = false
-      const data = await request({
-        method: 'get',
-        url: '/api/ctms/index/notice/list',
+      const data = await request('/api/ctms/project/list', {
         params
       })
       return data.data
@@ -27,14 +23,14 @@ export const useMessage = () => {
     }finally {
       //loading.value = false
     }
-    
+
   }
 
   const onLoad = async () => {
-    
+    console.log('onload')
     try {
       current ++
-      const data = await getMessage({ status, current, size })
+      const data = await getProjectList({ current, size })
       if (refreshing.value) {
         list.value = [];
         refreshing.value = false;
@@ -47,7 +43,6 @@ export const useMessage = () => {
     }finally {
       loading.value = false
     }
-   
   }
 
   const onRefresh = () => {
@@ -59,39 +54,13 @@ export const useMessage = () => {
   };
 
   return {
-    list,
     loading,
+    list,
+    onLoad,
     finished,
     refreshing,
-    error,
     onRefresh,
-    onLoad
-  }
-}
-
-/**
- * 日历
- * @returns 
- */
-export const useCalendar = () => {
-
-  const getToDoList = async ({date}) => {
-    try {
-      console.log(date)
-      const params = {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1
-      }
-      const data = await request('/api/ctms/index/calendar/list', {
-        params
-      })
-      console.log(data)
-    }catch(err) {
-      console.log(err)
-    }
+    getProjectList
   }
 
-  return {
-    getToDoList
-  }
 }
