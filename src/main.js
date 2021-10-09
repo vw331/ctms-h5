@@ -19,7 +19,7 @@ const app = createApp({
         if(val) {
           setRequestToken(val)
         }else {
-          router.push({name: 'Login'})
+          router.replace({name: 'Login'})
         }
       }
     }

@@ -5,7 +5,11 @@
       placeholder
       :title="title"
     />
-    <router-view/>
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
     <van-tabbar placeholder route>
       <van-tabbar-item replace to="/projectList" icon="medal-o">项目</van-tabbar-item>
       <van-tabbar-item replace to="/todo" icon="todo-list-o">待办</van-tabbar-item>

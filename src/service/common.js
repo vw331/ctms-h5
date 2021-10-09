@@ -75,17 +75,12 @@ export const useMessage = () => {
  */
 export const useCalendar = () => {
 
-  const getToDoList = async ({date}) => {
+  const getToDoList = async params => {
     try {
-      console.log(date)
-      const params = {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1
-      }
       const data = await request('/api/ctms/index/calendar/list', {
         params
       })
-      console.log(data)
+      return data
     }catch(err) {
       console.log(err)
     }
