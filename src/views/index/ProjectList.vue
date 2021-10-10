@@ -1,6 +1,6 @@
 <script setup>
-import { useProject } from '@/service/project/index'
-const { loading, list, onLoad, finished, onRefresh, refreshing, } = useProject()
+import { useProjectList } from '@/service/project/index'
+const { loading, list, onLoad, finished, onRefresh, refreshing, } = useProjectList()
 </script>
 
 <template>
@@ -17,6 +17,7 @@ const { loading, list, onLoad, finished, onRefresh, refreshing, } = useProject()
         :key="item" 
         :title="item.projectName" 
         :label="`项目负责人: ${item.studyLeader || '-'}`"
+        :to="{name: 'paoject', params: { projectId: item.id}}"
       >
         <template #icon>
           <van-image

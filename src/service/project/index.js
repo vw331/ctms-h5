@@ -1,7 +1,8 @@
 import request from '@/core/axios'
 import { ref } from 'vue'
 
-export const useProject = () => {
+// 项目列表
+export const useProjectList = () => {
 
   const list = ref([]);
   const loading = ref(false);
@@ -63,4 +64,29 @@ export const useProject = () => {
     getProjectList
   }
 
+}
+
+// 项目信息
+export const useProject = () => {
+
+  const loading = ref(false)
+
+  const getProject = async projectId => {
+    try {
+      loading.value = true
+      const data = await request('/api/ctms/project/detail', {
+        params: {projectId}
+      })
+      return data
+    }catch(err) {
+      console.log(err)
+    }finally{
+      loading.value = false
+    }
+  }
+
+  return {
+    loading,
+    getProject
+  }
 }

@@ -1,8 +1,12 @@
 import store from '@/store'
+import { Toast } from 'vant';
 import { useUserInfo } from '@/service/system'
+import { useProject } from '@/service/project'
+import { watchEffect } from 'vue'
 
 const whiteList = ['Login']
 
+// 全局守卫
 export default async (to, from, next) => {
 
   const { token, userInfo } = store.getters
@@ -29,25 +33,28 @@ export default async (to, from, next) => {
     }
   }
 
-  // 白名单页面直接通过
-  /* if(whiteList.includes(to.name)) {
-    next()
-  }else {
-    if(token) {
-      if(userInfo) {
-        next()
-      }else {
-        const { getUserInfo } = useUserInfo()
-        try {
-          await getUserInfo()
-          next()
-        }catch(err){
-          next({name: 'Login'})
-        }
-        
-      }
+}
+
+// 项目拦截器
+export const projectInterceptor = async (to, from, next) => {
+  const { getProject, loading } = useProject()
+
+  watchEffect(() => {
+    if(loading) {
+      Toast.loading({
+        message: '正在进入...',
+        forbidClick: true,
+      })
     }else {
-      next({name: 'Login'})
+      Toast.clear()
     }
-  } */
+  })
+
+  const { projectId } = to.params 
+  const { data } = await getProject(projectId)
+  to.params = {
+    ...to.params,
+    detail: data,
+  }
+  next()
 }

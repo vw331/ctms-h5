@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import routerInterceptor from './interceptor'
+import globalInterceptor, { projectInterceptor } from './interceptor'
 
 const routes = [
   {
@@ -45,6 +45,26 @@ const routes = [
     component: () => import('@/views/Login.vue')
   },
   {
+    path: '/project/:projectId',
+    name: 'paoject',
+    component: () => import('@/views/project/Index'),
+    props: true,
+    beforeEnter: [ projectInterceptor ],
+    redirect: { name: 'projectWorkspace' },
+    children: [
+      {
+        path: 'workspace',
+        name: 'projectWorkspace',
+        component: () => import('@/views/project/WorkSpace')
+      },
+      {
+        path: 'info',
+        name: 'projectInfo',
+        component: () => import('@/views/project/Info')
+      }
+    ]
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting
@@ -59,6 +79,6 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(routerInterceptor)
+router.beforeEach(globalInterceptor)
 
 export default router
