@@ -1,7 +1,14 @@
 module.exports = {
   configureWebpack: config => {
-    console.log(config)
     console.log(process.env.NODE_ENV)
+  },
+  chainWebpack: config => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = "CTMS临床试验项目管理系统";
+        return args;
+      })
   },
   outputDir: 'dist',
   devServer: {

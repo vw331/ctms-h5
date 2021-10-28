@@ -1,13 +1,13 @@
 import {
   NavBar,
-  Tabbar, 
+  Tabbar,
   TabbarItem,
   Button,
   Tag,
   Col,
   Icon,
   Cell,
-  Form, 
+  Form,
   Field,
   CellGroup,
   Swipe,
@@ -21,7 +21,11 @@ import {
   Dialog,
   List,
   PullRefresh,
-  Calendar
+  Calendar,
+  Popup,
+  Search,
+  DropdownMenu,
+  DropdownItem
 } from 'vant';
 
 export default {
@@ -33,12 +37,12 @@ export default {
       Col,
       Icon,
       Cell,
-      Form, 
+      Form,
       CellGroup,
       Field,
       Swipe,
       Toast,
-      Tabbar, 
+      Tabbar,
       TabbarItem,
       SwipeItem,
       ActionBar,
@@ -49,7 +53,11 @@ export default {
       Dialog,
       List,
       PullRefresh,
-      Calendar
+      Calendar,
+      Popup,
+      Search,
+      DropdownMenu,
+      DropdownItem
     ].forEach(component => {
       app.use(component)
     })

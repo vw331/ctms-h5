@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import globalInterceptor, { projectInterceptor } from './interceptor'
+import globalInterceptor, { afterEnterInterceptor, projectInterceptor } from './interceptor'
 
 const routes = [
   {
     path: '/',
     name: 'Index',
+    meta: { title: '登录', requiresAuth: true },
     component: () => import('@/views/index/Index'),
     redirect: '/projectList',
     children: [
@@ -12,36 +13,38 @@ const routes = [
         path: 'projectList',
         name: 'ProjectList',
         meta: {
-          title: '项目列表'
+          title: '项目列表',
+          keepAlive: true
         },
         component: () => import('@/views/index/ProjectList')
-      },{
+      }, {
         path: 'todo',
         name: 'Todo',
         meta: {
           title: '待办事项'
         },
         component: () => import('@/views/index/Todo')
-      },{
+      }, {
         path: 'message',
         name: 'Message',
         meta: {
           title: '消息中心'
         },
         component: () => import('@/views/index/Message')
-      },{
+      }, {
         path: 'me',
         name: 'Me',
         meta: {
           title: '我的'
         },
         component: () => import('@/views/index/Me')
-      }, 
+      },
     ]
   },
   {
     path: '/login',
     name: 'Login',
+    meta: { title: '登录', requiresAuth: false },
     component: () => import('@/views/Login.vue')
   },
   {
@@ -49,17 +52,20 @@ const routes = [
     name: 'paoject',
     component: () => import('@/views/project/Index'),
     props: true,
-    beforeEnter: [ projectInterceptor ],
+    meta: { title: '项目', requiresAuth: true, transition: 'van-slide-up' },
+    beforeEnter: [projectInterceptor],
     redirect: { name: 'projectWorkspace' },
     children: [
       {
         path: 'workspace',
         name: 'projectWorkspace',
+        meta: { title: '工作台' },
         component: () => import('@/views/project/WorkSpace')
       },
       {
         path: 'info',
         name: 'projectInfo',
+        meta: { title: '消息' },
         component: () => import('@/views/project/Info')
       }
     ]
@@ -67,6 +73,7 @@ const routes = [
   {
     path: '/about',
     name: 'About',
+    meta: { title: '关于我们', requiresAuth: false },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -80,5 +87,6 @@ const router = createRouter({
 })
 
 router.beforeEach(globalInterceptor)
+router.afterEach(afterEnterInterceptor())
 
 export default router

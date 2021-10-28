@@ -4,35 +4,46 @@ import { useUserInfo } from '@/service/system'
 import { useProject } from '@/service/project'
 import { watchEffect } from 'vue'
 
-const whiteList = ['Login']
-
-// 全局守卫
+// 权限守卫
 export default async (to, from, next) => {
-
   const { token, userInfo } = store.getters
 
-  if(token) {
+  if (token) {
     // 已登录状态
-    if(userInfo) {
+    if (userInfo) {
       next()
-    }else {
+    } else {
       const { getUserInfo } = useUserInfo()
       try {
         await getUserInfo()
         next()
-      }catch(err){
-        next({name: 'Login'})
+      } catch (err) {
+        next({ name: 'Login' })
       }
     }
-  }else { 
+  } else {
     // 未登陆状态
-    if( whiteList.includes(to.name) ) {
+    const { requiresAuth = true } = to.meta
+    if (requiresAuth) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath },
+      })
+    } else {
       next()
-    }else {
-      next({name: 'Login'})
     }
   }
 
+}
+
+// 后置钩子
+export const afterEnterInterceptor = () => {
+  const originTitle = document.title
+  return (to) => {
+    const name = to.name
+    const { title } = to.meta
+    document.title = (title || name) + ' - ' + originTitle
+  }
 }
 
 // 项目拦截器
@@ -40,17 +51,17 @@ export const projectInterceptor = async (to, from, next) => {
   const { getProject, loading } = useProject()
 
   watchEffect(() => {
-    if(loading) {
+    if (loading) {
       Toast.loading({
         message: '正在进入...',
         forbidClick: true,
       })
-    }else {
+    } else {
       Toast.clear()
     }
   })
 
-  const { projectId } = to.params 
+  const { projectId } = to.params
   const { data } = await getProject(projectId)
   to.params = {
     ...to.params,

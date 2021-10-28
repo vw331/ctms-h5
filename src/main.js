@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { useRoute } from 'vue-router'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -7,7 +8,7 @@ import { injection } from '@/mixin'
 
 import '@/style/styles.css'
 
-import request, {setRequestToken} from '@/core/axios'
+import request, { setRequestToken } from '@/core/axios'
 
 const app = createApp({
   ...App,
@@ -15,11 +16,16 @@ const app = createApp({
   watch: {
     '$store.state.user.token': {
       immediate: true,
-      handler(val) {
-        if(val) {
+      handler(val, oldVal) {
+        if (val) {
           setRequestToken(val)
-        }else {
-          router.replace({name: 'Login'})
+        }
+        if (oldVal && !val) {
+          const { fullPath } = useRoute()
+          router.replace({
+            name: 'Login',
+            query: { redirect: fullPath },
+          })
         }
       }
     }
@@ -31,7 +37,7 @@ app.use(store)
   .use(vantComponents)
   .mount('#app')
 
-app  
+app
 
 app.config.globalProperties.foo = 'bar'
 app.config.globalProperties.$http = request
