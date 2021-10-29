@@ -25,7 +25,9 @@ import {
   Popup,
   Search,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Grid,
+  GridItem
 } from 'vant';
 
 export default {
@@ -57,7 +59,9 @@ export default {
       Popup,
       Search,
       DropdownMenu,
-      DropdownItem
+      DropdownItem,
+      Grid,
+      GridItem
     ].forEach(component => {
       app.use(component)
     })

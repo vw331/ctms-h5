@@ -14,28 +14,32 @@ const routes = [
         name: 'ProjectList',
         meta: {
           title: '项目列表',
-          keepAlive: true
+          keepAlive: true,
+          showNavBar: true
         },
         component: () => import('@/views/index/ProjectList')
       }, {
         path: 'todo',
         name: 'Todo',
         meta: {
-          title: '待办事项'
+          title: '待办事项',
+          showNavBar: true
         },
         component: () => import('@/views/index/Todo')
       }, {
         path: 'message',
         name: 'Message',
         meta: {
-          title: '消息中心'
+          title: '消息中心',
+          showNavBar: true
         },
         component: () => import('@/views/index/Message')
       }, {
         path: 'me',
         name: 'Me',
         meta: {
-          title: '我的'
+          title: '我的',
+          showNavBar: false
         },
         component: () => import('@/views/index/Me')
       },
