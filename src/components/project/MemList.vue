@@ -15,10 +15,10 @@ const props = defineProps({
       v-for="item in props.mem"
       class="flex-wrap"
       :key="item.id"
-      :value="item.realName"
+      :title="item.realName"
       size="large"
       :label="`最近登录: ${item?.lastLoginTime.split(' ').at(0)}`"
-      :title="item.userRoleName"
+      :value="item.userRoleName"
       is-link
       clickable
     >

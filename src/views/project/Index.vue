@@ -74,7 +74,6 @@ const props = defineProps({
   mem: Array,
   center: Array,
 });
-console.log(props.center);
 provide("project", props.detail);
 provide("projectId", props.projectId);
 provide("menu", props.menu);

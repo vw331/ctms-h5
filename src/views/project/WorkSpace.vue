@@ -1,6 +1,11 @@
 <script setup>
 import { inject, ref } from "vue";
-import { TimeLine, CenterList, MemList } from "@/components/project";
+import {
+  ProjectNews,
+  TimeLine,
+  CenterList,
+  MemList,
+} from "@/components/project";
 
 const project = inject("project");
 const projectId = inject("projectId");
@@ -34,6 +39,9 @@ const active = ref(0);
   </div>
 
   <van-tabs v-model:active="active">
+    <van-tab title="动态">
+      <project-news :projectId="projectId"></project-news>
+    </van-tab>
     <van-tab title="进度"
       ><time-line :projectId="projectId"></time-line
     ></van-tab>
@@ -43,7 +51,6 @@ const active = ref(0);
     <van-tab title="项目组">
       <mem-list :mem="mem"></mem-list>
     </van-tab>
-    <van-tab title="财务">财务</van-tab>
     <van-tab title="问题">问题</van-tab>
   </van-tabs>
 </template>
