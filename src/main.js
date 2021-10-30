@@ -7,6 +7,7 @@ import vantComponents from '@/core/vant'
 import { injection } from '@/mixin'
 
 import '@/style/styles.css'
+import '@/style/root.css'
 
 import request, { setRequestToken } from '@/core/axios'
 

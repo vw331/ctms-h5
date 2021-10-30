@@ -1,7 +1,7 @@
 import store from '@/store'
 import { Toast } from 'vant';
 import { useUserInfo } from '@/service/system'
-import { useProject } from '@/service/project'
+import { useAll } from '@/service/project'
 import { watchEffect } from 'vue'
 
 // 权限守卫
@@ -48,7 +48,7 @@ export const afterEnterInterceptor = () => {
 
 // 项目拦截器
 export const projectInterceptor = async (to, from, next) => {
-  const { getProject, loading } = useProject()
+  const { getAll, loading } = useAll()
 
   watchEffect(() => {
     if (loading) {
@@ -62,10 +62,14 @@ export const projectInterceptor = async (to, from, next) => {
   })
 
   const { projectId } = to.params
-  const { data } = await getProject(projectId)
+  const { detail, menu, mem, center } = await getAll(projectId)
+
   to.params = {
     ...to.params,
-    detail: data,
+    detail,
+    menu,
+    mem,
+    center
   }
   next()
 }

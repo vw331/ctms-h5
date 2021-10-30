@@ -1,7 +1,13 @@
 
 <template>
   <div class="bg-gray-100 min-h-screen">
-    <van-nav-bar fixed placeholder :title="detail.projectName" right-text="">
+    <van-nav-bar
+      fixed
+      placeholder
+      :title="detail.projectName"
+      right-text=""
+      z-index="99"
+    >
       <template #left>
         <van-icon @click="showPopup = !showPopup" name="wap-nav" size="18" />
       </template>
@@ -64,9 +70,16 @@ const showPopup = ref(false);
 const props = defineProps({
   projectId: String,
   detail: Object,
+  menu: Array,
+  mem: Array,
+  center: Array,
 });
-
+console.log(props.center);
 provide("project", props.detail);
+provide("projectId", props.projectId);
+provide("menu", props.menu);
+provide("mem", props.mem);
+provide("center", props.center);
 </script>
 
 <style>

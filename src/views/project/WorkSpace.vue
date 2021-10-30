@@ -1,6 +1,12 @@
 <script setup>
 import { inject, ref } from "vue";
+import { TimeLine, CenterList, MemList } from "@/components/project";
+
 const project = inject("project");
+const projectId = inject("projectId");
+const center = inject("center");
+const mem = inject("mem");
+
 const topStyle = {
   background: `url(${project.projectIcon}) center center no-repeat`,
   "background-size": "cover",
@@ -8,6 +14,7 @@ const topStyle = {
   "z-index": -1,
 };
 const value = ref("");
+const active = ref(0);
 </script>
 
 <template>
@@ -15,7 +22,6 @@ const value = ref("");
     class="relative flex flex-col justify-center text-white text-xs z-10 p-2"
     style="height: 10rem"
   >
-    <h2 class="text-md text-center">{{ project.projectName }}</h2>
     <van-search
       v-model="value"
       background="transparent"
@@ -26,7 +32,20 @@ const value = ref("");
       :style="topStyle"
     ></div>
   </div>
-  <router-link to="/project/345/info">345info</router-link>
+
+  <van-tabs v-model:active="active">
+    <van-tab title="进度"
+      ><time-line :projectId="projectId"></time-line
+    ></van-tab>
+    <van-tab title="中心">
+      <center-list :center="center"></center-list>
+    </van-tab>
+    <van-tab title="项目组">
+      <mem-list :mem="mem"></mem-list>
+    </van-tab>
+    <van-tab title="财务">财务</van-tab>
+    <van-tab title="问题">问题</van-tab>
+  </van-tabs>
 </template>
 
 <style lang="less" scoped>

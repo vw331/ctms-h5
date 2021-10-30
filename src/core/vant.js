@@ -27,12 +27,19 @@ import {
   DropdownMenu,
   DropdownItem,
   Grid,
-  GridItem
+  GridItem,
+  Tab,
+  Tabs,
+  Step,
+  Steps,
+  ConfigProvider,
+  Progress
 } from 'vant';
 
 export default {
   install: (app) => {
     [
+      ConfigProvider,
       NavBar,
       Button,
       Tag,
@@ -61,7 +68,12 @@ export default {
       DropdownMenu,
       DropdownItem,
       Grid,
-      GridItem
+      GridItem,
+      Tab,
+      Tabs,
+      Step,
+      Steps,
+      Progress
     ].forEach(component => {
       app.use(component)
     })

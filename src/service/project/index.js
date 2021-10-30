@@ -19,9 +19,9 @@ export const useProjectList = () => {
         params
       })
       return data.data
-    }catch(err) {
+    } catch (err) {
       console.log(err)
-    }finally {
+    } finally {
       //loading.value = false
     }
 
@@ -30,7 +30,7 @@ export const useProjectList = () => {
   const onLoad = async () => {
     console.log('onload')
     try {
-      current ++
+      current++
       const data = await getProjectList({ current, size })
       if (refreshing.value) {
         list.value = [];
@@ -39,9 +39,9 @@ export const useProjectList = () => {
       const { records, total } = data
       list.value = list.value.concat(records)
       finished.value = list.value.length == total
-    }catch(err) {
+    } catch (err) {
       error.value = error
-    }finally {
+    } finally {
       loading.value = false
     }
   }
@@ -66,6 +66,40 @@ export const useProjectList = () => {
 
 }
 
+// 获取所有信息
+export const useAll = () => {
+
+  const loading = ref(false)
+
+  const getAll = async projectId => {
+    try {
+      loading.value = true
+      const result = await Promise.all([
+        request(`/api/ctms/project/detail?projectId=${projectId}`),
+        request(`/api/ctms/project/menu?projectId=${projectId}`),
+        request(`/api/ctms/project/mem/list?projectId=${projectId}&status=active`),
+        request(`/api/ctms/project/hospital/list?projectId=${projectId}&size=1000&current=1&status=active`)
+      ])
+      return {
+        detail: result[0].data,
+        menu: result[1].data,
+        mem: result[2].data,
+        center: result[3].data.records
+      }
+    } catch (err) {
+      throw '无权访问'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return {
+    getAll,
+    loading
+  }
+
+}
+
 // 项目信息
 export const useProject = () => {
 
@@ -75,12 +109,12 @@ export const useProject = () => {
     try {
       loading.value = true
       const data = await request('/api/ctms/project/detail', {
-        params: {projectId}
+        params: { projectId }
       })
       return data
-    }catch(err) {
+    } catch (err) {
       console.log(err)
-    }finally{
+    } finally {
       loading.value = false
     }
   }
@@ -88,5 +122,33 @@ export const useProject = () => {
   return {
     loading,
     getProject
+  }
+}
+
+// 项目进度
+export const useProcess = () => {
+  const loading = ref(false)
+  const getProcessList = async projectId => {
+    try {
+      loading.value = true
+      const res = await request({
+        url: '/api/ctms/project/plan/list',
+        params: {
+          projectId,
+          size: 999,
+          current: 1
+        }
+      })
+      const { records = [] } = res.data
+      return records
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loading.value = false
+    }
+  }
+  return {
+    getProcessList,
+    loading
   }
 }

@@ -1,0 +1,4 @@
+:root {
+  --van-tabs-bottom-bar-color: var(--van-primary-color);
+  --van-step-active-color: var(--van-primary-color);
+}
