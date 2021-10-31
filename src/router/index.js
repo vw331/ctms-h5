@@ -14,7 +14,6 @@ const routes = [
         name: 'ProjectList',
         meta: {
           title: '项目列表',
-          keepAlive: true,
           showNavBar: true
         },
         component: () => import('@/views/index/ProjectList')
@@ -82,13 +81,13 @@ const routes = [
           {
             path: 'list',
             name: 'projectDocList',
-            meta: { title: '文档列表' },
+            meta: { title: '文档列表', keepAliveDoc: true },
             component: () => import('@/views/project/doc/List')
           },
           {
             path: ':id',
             name: 'projectDocFolder',
-            meta: { title: '文件夹详情' },
+            meta: { title: '文件夹详情', keepAliveDoc: false },
             props: true,
             component: () => import('@/views/project/doc/Detail')
           }

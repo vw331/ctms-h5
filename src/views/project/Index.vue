@@ -24,11 +24,7 @@
         </router-link>
       </template>
     </van-nav-bar>
-    <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
+    <router-view> </router-view>
     <van-popup
       v-model:show="showPopup"
       position="left"

@@ -1,8 +1,5 @@
 <script setup>
-import { toRefs, provide, ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-const route = useRoute();
-const { meta } = toRefs(route);
+import { provide, ref, onMounted } from "vue";
 const isMiniprogram = ref(false);
 const isWeixin = ref(false);
 
@@ -25,12 +22,5 @@ onMounted(() => {
 provide("isMiniprogram", isMiniprogram);
 </script>
 <template>
-  <router-view v-slot="{ Component }">
-    <transition>
-      <keep-alive v-if="meta.keepAlive">
-        <component :is="Component" />
-      </keep-alive>
-      <component v-else :is="Component" />
-    </transition>
-  </router-view>
+  <router-view> </router-view>
 </template>

@@ -4,8 +4,9 @@
 <template>
   <router-view v-slot="{ Component }">
     <keep-alive>
-      <component :is="Component" />
+      <component v-if="$route.meta.keepAliveDoc" :is="Component" />
     </keep-alive>
+    <component :is="Component" v-if="!$route.meta.keepAliveDoc" />
   </router-view>
 </template>
 

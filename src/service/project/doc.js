@@ -1,5 +1,5 @@
 import request from '@/core/axios'
-import { ref } from 'vue'
+import { ref, reactive, computed } from 'vue'
 
 // 文档类别
 export const useCategory = () => {
@@ -48,6 +48,7 @@ export const useCatalogue = () => {
   }
 }
 
+// 文件列表
 export const useDocList = () => {
   const loading = ref(false)
   const getDocList = async params => {
@@ -71,4 +72,56 @@ export const useDocList = () => {
     loading,
     getDocList
   }
+}
+
+// 文件详情
+export const useDocItem = () => {
+
+  const activeItem = reactive({})
+  const showActionBar = ref(false)
+  const showPicturePopup = ref(false)
+  const pictureLink = ref('')
+
+  const download = () => {
+    console.log(activeItem)
+  }
+
+
+  const viewFile = () => {
+    const { fileLocation } = activeItem
+    const type = fileLocation.split('/').pop().split('.').pop()
+    if (['png', 'jpg', 'jpeg'].includes(type)) {
+      showPicturePopup.value = true
+      pictureLink.value = activeItem.fileLocation
+    } else {
+      window.open(fileLocation, '_blank')
+    }
+  }
+
+  const onSelect = item => {
+    Object.assign(activeItem, item)
+    showActionBar.value = true
+  }
+
+
+  const actions = computed(() => {
+
+    return [
+      { name: "预览", callback: viewFile },
+      { name: "下载", callback: download },
+      { name: "重命名" },
+      { name: "删除" },
+      { name: "提交审核" },
+      { name: "归档" }
+    ]
+  })
+
+  return {
+    onSelect,
+    actions,
+    showActionBar,
+    showPicturePopup,
+    pictureLink
+  }
+
 }

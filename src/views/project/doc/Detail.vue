@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref, onMounted } from "vue";
-import { useDocList } from "@/service/project/doc";
+import { useDocList, useDocItem } from "@/service/project/doc";
 import File from "@/components/common/File";
 
 const props = defineProps({
@@ -9,25 +9,10 @@ const props = defineProps({
 });
 
 const { getDocList, loading } = useDocList();
+const { onSelect, actions, showActionBar, pictureLink, showPicturePopup } =
+  useDocItem();
+
 const data = ref([]);
-const showActionSheet = ref(false);
-const actions = [
-  { name: "预览" },
-  { name: "下载" },
-  { name: "重命名" },
-  { name: "删除" },
-  { name: "提交审核" },
-  { name: "归档" },
-];
-
-const onClick = (item) => {
-  console.log(item);
-  showActionSheet.value = true;
-};
-
-const onSelect = (item) => {
-  console.log(item);
-};
 
 onMounted(async () => {
   data.value = await getDocList({
@@ -55,7 +40,7 @@ onMounted(async () => {
           overflow: 'hidden',
           flex: 2,
         }"
-        @click="onClick(item)"
+        @click="onSelect(item)"
       >
         <template #icon>
           <file :link="item.fileLocation"></file>
@@ -79,12 +64,19 @@ onMounted(async () => {
     </van-action-bar>
 
     <van-action-sheet
-      v-model:show="showActionSheet"
+      v-model:show="showActionBar"
       :actions="actions"
-      @select="onSelect"
       cancel-text="取消"
       close-on-click-action
     />
+
+    <van-popup
+      v-model:show="showPicturePopup"
+      closeable
+      :style="{ width: '100%' }"
+    >
+      <img :src="pictureLink" alt="" />
+    </van-popup>
   </div>
 </template>
 
