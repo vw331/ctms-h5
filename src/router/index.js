@@ -89,6 +89,7 @@ const routes = [
             path: ':id',
             name: 'projectDocFolder',
             meta: { title: '文件夹详情' },
+            props: true,
             component: () => import('@/views/project/doc/Detail')
           }
         ]

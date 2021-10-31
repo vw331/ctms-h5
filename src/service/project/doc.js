@@ -22,6 +22,7 @@ export const useCategory = () => {
   }
 }
 
+// 文件夹列表
 export const useCatalogue = () => {
   const loading = ref(false)
   const getCatalogue = async params => {
@@ -44,5 +45,30 @@ export const useCatalogue = () => {
   return {
     getCatalogue,
     loading
+  }
+}
+
+export const useDocList = () => {
+  const loading = ref(false)
+  const getDocList = async params => {
+    try {
+      loading.value = true
+      const res = await request({
+        url: `/api/ctms/project/v2/directory/list`,
+        params
+      })
+      const { data, success, msg } = res
+      if (!success) throw msg
+      return data
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return {
+    loading,
+    getDocList
   }
 }

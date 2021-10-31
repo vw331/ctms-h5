@@ -34,7 +34,8 @@ import {
   Steps,
   ConfigProvider,
   Progress,
-  Empty
+  Empty,
+  ActionSheet
 } from 'vant';
 
 export default {
@@ -75,7 +76,8 @@ export default {
       Step,
       Steps,
       Progress,
-      Empty
+      Empty,
+      ActionSheet
     ].forEach(component => {
       app.use(component)
     })

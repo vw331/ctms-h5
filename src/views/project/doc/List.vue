@@ -53,7 +53,7 @@ onMounted(async () => {
         :options="statusOption"
       />
     </van-dropdown-menu>
-    <div v-if="loading" class="text-center">
+    <div v-if="loading" class="text-center py-6">
       <van-loading />
     </div>
     <van-empty v-else-if="catalogueList.length == 0" description="暂无信息" />
