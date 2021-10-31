@@ -1,13 +1,7 @@
 
 <template>
   <div class="bg-gray-100 min-h-screen">
-    <van-nav-bar
-      fixed
-      placeholder
-      :title="detail.projectName"
-      right-text=""
-      z-index="99"
-    >
+    <van-nav-bar fixed placeholder :title="title" right-text="" z-index="99">
       <template #left>
         <van-icon @click="showPopup = !showPopup" name="wap-nav" size="18" />
       </template>
@@ -41,6 +35,18 @@
       class="bg-gray-100"
       :style="{ height: '100vh', width: '80%' }"
     >
+      <van-cell-group inset title="常用">
+        <van-cell
+          title="工作台"
+          :to="{ name: 'projectWorkspace', params: { projectId } }"
+          is-link
+        />
+        <van-cell
+          title="我的文档"
+          :to="{ name: 'projectDoc', params: { projectId } }"
+          is-link
+        />
+      </van-cell-group>
       <van-cell-group inset title="审批管理">
         <van-cell title="待办事项" is-link />
         <van-cell title="我的请求" is-link />
@@ -49,8 +55,6 @@
         <van-cell title="抄送事宜" is-link />
       </van-cell-group>
       <van-cell-group inset title="项目管理">
-        <van-cell title="中心管理" is-link />
-        <van-cell title="人员管理" is-link />
         <van-cell title="预算管理" is-link />
         <van-cell title="费用管理" is-link />
       </van-cell-group>
@@ -65,8 +69,11 @@
 </template>
 
 <script setup>
-import { provide, defineProps, ref } from "vue";
+import { provide, defineProps, ref, toRef } from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
+
 const showPopup = ref(false);
+
 const props = defineProps({
   projectId: String,
   detail: Object,
@@ -74,11 +81,19 @@ const props = defineProps({
   mem: Array,
   center: Array,
 });
+
+const title = toRef(props.detail, "projectName");
+const projectId = toRef(props, "projectId");
+
 provide("project", props.detail);
 provide("projectId", props.projectId);
 provide("menu", props.menu);
 provide("mem", props.mem);
 provide("center", props.center);
+
+onBeforeRouteUpdate(() => {
+  showPopup.value = false;
+});
 </script>
 
 <style>

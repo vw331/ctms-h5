@@ -71,6 +71,27 @@ const routes = [
         name: 'projectInfo',
         meta: { title: '消息' },
         component: () => import('@/views/project/Info')
+      },
+      {
+        path: 'doc',
+        name: 'projectDoc',
+        meta: { title: '文档' },
+        redirect: { name: 'projectDocList' },
+        component: () => import('@/views/project/doc/Index'),
+        children: [
+          {
+            path: 'list',
+            name: 'projectDocList',
+            meta: { title: '文档列表' },
+            component: () => import('@/views/project/doc/List')
+          },
+          {
+            path: ':id',
+            name: 'projectDocFolder',
+            meta: { title: '文件夹详情' },
+            component: () => import('@/views/project/doc/Detail')
+          }
+        ]
       }
     ]
   },

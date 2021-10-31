@@ -33,7 +33,8 @@ import {
   Step,
   Steps,
   ConfigProvider,
-  Progress
+  Progress,
+  Empty
 } from 'vant';
 
 export default {
@@ -73,7 +74,8 @@ export default {
       Tabs,
       Step,
       Steps,
-      Progress
+      Progress,
+      Empty
     ].forEach(component => {
       app.use(component)
     })
