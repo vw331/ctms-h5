@@ -94,11 +94,10 @@ onMounted(load);
       <van-action-bar-button type="success" text="确认完成" />
       <van-uploader 
         class="btn-uploader"
-        :after-read="afterRead" 
-        multiple 
+        :after-read="afterRead"
         capture="camera"
         >
-         <van-action-bar-button type="primary" text="上传文件" />
+         <van-action-bar-button type="primary" text="拍照上传" />
        </van-uploader>   
     </van-action-bar>
 

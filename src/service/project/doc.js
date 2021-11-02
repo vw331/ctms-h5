@@ -141,17 +141,21 @@ export const useUpload = (directory) => {
   const rename = async file => {
     const name = file.file.value.name
     const justName = name.split('.').shift()
-    const res = await myDialog({
-      title: '将文件重命名',
-      placeholder: '请输入文件名称',
-      defaultValue: '',
-      describe: `${justName}`
-    })
-    const newName = name.replace(justName, res)
-    const newFile = new File([file.file.value], newName, {
-      type: file.file.value.type
-    })
-    return newFile
+    try {
+      const res = await myDialog({
+        title: '将文件重命名',
+        placeholder: '请输入文件名称',
+        defaultValue: '',
+        describe: `${justName}`
+      })
+      const newName = name.replace(justName, res)
+      const newFile = new File([file.file.value], newName, {
+        type: file.file.value.type
+      })
+      return newFile
+    }catch(err) {
+      return file
+    }
   }
 
   // 上传文件
