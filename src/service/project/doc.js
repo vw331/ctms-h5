@@ -142,6 +142,7 @@ export const useUpload = (directory) => {
     const name = file.file.value.name
     const justName = name.split('.').shift()
     try {
+      alert(justName)
       const res = await myDialog({
         title: '将文件重命名',
         placeholder: '请输入文件名称',
@@ -152,6 +153,7 @@ export const useUpload = (directory) => {
       const newFile = new File([file.file.value], newName, {
         type: file.file.value.type
       })
+      alert(`newFile: ${newFile.name}`)
       return newFile
     }catch(err) {
       return file
@@ -162,6 +164,7 @@ export const useUpload = (directory) => {
   const upload = async files => {
     const refFiles = toRefs(files)
     const newFiles = await rename(refFiles)
+    alert(newFiles)
     try {
       Toast.loading({
         message: '正在上传...',
