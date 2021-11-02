@@ -38,7 +38,7 @@ Toast.allowMultiple()
     break;
   default:
     console.warn(msg)
-    tip(msg || '连接失败')
+    tip(msg || `连接失败: ${status}`)
   }
 }
 
