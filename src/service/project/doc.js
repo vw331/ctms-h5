@@ -171,6 +171,7 @@ export const useUpload = (directory) => {
       })
       console.log('压缩前:', refFiles.value.size)
       console.log('压缩后:', newFile.size)
+      alert(`压缩后文件大小: ${newFile.size}`)
       Toast.loading({
         message: '正在上传...',
         forbidClick: true,
