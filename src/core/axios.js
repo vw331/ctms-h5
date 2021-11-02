@@ -6,7 +6,7 @@ import { Base64 } from 'js-base64';
 //创建实例
 const request = axios.create({
   //baseURL: '/api',
-  timeout: 1000 * 12 
+  timeout: 1000 * 100 
 })
 
 request.defaults.headers.post['Content-Type'] = 'application/json'
