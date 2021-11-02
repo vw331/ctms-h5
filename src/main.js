@@ -38,7 +38,5 @@ app.use(store)
   .use(vantComponents)
   .mount('#app')
 
-app
-
 app.config.globalProperties.foo = 'bar'
 app.config.globalProperties.$http = request

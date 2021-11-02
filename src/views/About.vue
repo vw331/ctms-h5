@@ -1,24 +1,26 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <button @click="propmt">popmpt</button>
   </div>
 </template>
 
 <script>
+import myDialog from '@/components/common/MyDialog'
+
 export default {
   setup() {
-    /* console.log(this.foo)
-    this.$http.get('http://aboutsunhao.com/api/test')
-      .then(res => {
-        console.log(res)
-      }) */
+    
   },
-  created() {
-    console.log(this.foo)
-    this.$http.get('http://aboutsunhao.com/api/test')
-      .then(res => {
-        console.log(res)
-      }) 
+  created() { 
+  },
+  methods: {
+    async propmt() {
+      const result = await myDialog({
+        title: '修改文件名称',
+        defaultValue: '申请书.jpg'
+      })
+      console.log(result)
+    }    
   }
 }
 </script>

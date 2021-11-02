@@ -1,25 +1,46 @@
 <script setup>
-import { defineProps, ref, onMounted } from "vue";
-import { useDocList, useDocItem } from "@/service/project/doc";
+import { defineProps, ref, onMounted, computed } from "vue";
+import { ImagePreview } from 'vant';
+import { useDocList, useDocItem, useUpload } from "@/service/project/doc";
 import File from "@/components/common/File";
+import { isPicture } from '@/util/whatIsThat'
 
 const props = defineProps({
   projectId: String,
   id: String,
 });
 
-const { getDocList, loading } = useDocList();
-const { onSelect, actions, showActionBar, pictureLink, showPicturePopup } =
-  useDocItem();
-
 const data = ref([]);
+const images = computed(() => {
+  return data.value
+    .map(item => item.fileLocation)
+    .filter(item => isPicture(item))
+})
 
-onMounted(async () => {
+const load = async () => {
   data.value = await getDocList({
     projectId: props.projectId,
     parentId: props.id,
   });
-});
+}
+
+const { getDocList, loading } = useDocList();
+const { onSelect, actions, showActionBar, pictureLink, showPicturePopup } = useDocItem();
+const { upload } = useUpload({ id: props.id })  
+
+const afterRead = async (file) => {
+  await upload(file)
+  load()
+}
+
+const showImages = item => {
+  ImagePreview({
+    images: images.value,
+    startPosition: images.value.findIndex(link => link == item),
+  });
+}
+
+onMounted(load);
 </script>
 
 
@@ -43,7 +64,18 @@ onMounted(async () => {
         @click="onSelect(item)"
       >
         <template #icon>
-          <file :link="item.fileLocation"></file>
+          <file 
+            v-if="!isPicture(item.fileLocation)" 
+            size="42px"
+            :link="item.fileLocation"></file>
+          <van-image
+            v-else
+            width="42px"
+            height="42px"
+            fit="fill"
+            :src="item.fileLocation"
+            @click.stop="showImages(item.fileLocation)"
+          />
         </template>
         <template #title>
           <p class="truncate pl-2">
@@ -60,7 +92,13 @@ onMounted(async () => {
     </van-cell-group>
     <van-action-bar>
       <van-action-bar-button type="success" text="确认完成" />
-      <van-action-bar-button type="primary" text="上传文件" />
+      <van-uploader 
+        class="btn-uploader"
+        :after-read="afterRead" 
+        multiple 
+        >
+         <van-action-bar-button type="primary" text="上传文件" />
+       </van-uploader>   
     </van-action-bar>
 
     <van-action-sheet
@@ -80,5 +118,15 @@ onMounted(async () => {
   </div>
 </template>
 
-<style>
+<style lang="less" scoped>
+/deep/.btn-uploader {
+  flex: 1;
+  .van-uploader__wrapper {
+    width: 100%
+  }
+  .van-uploader__input-wrapper {
+    display: flex;
+    width: 100%
+  }
+}
 </style>

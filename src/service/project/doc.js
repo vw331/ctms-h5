@@ -1,5 +1,7 @@
 import request from '@/core/axios'
-import { ref, reactive, computed } from 'vue'
+import { ref, toRefs, reactive, computed, inject } from 'vue'
+import myDialog from '@/components/common/MyDialog'
+import { Toast, Notify  } from 'vant';
 
 // 文档类别
 export const useCategory = () => {
@@ -81,6 +83,7 @@ export const useDocItem = () => {
   const showActionBar = ref(false)
   const showPicturePopup = ref(false)
   const pictureLink = ref('')
+  const isMiniprogram = inject('isMiniprogram')
 
   const download = () => {
     console.log(activeItem)
@@ -94,7 +97,11 @@ export const useDocItem = () => {
       showPicturePopup.value = true
       pictureLink.value = activeItem.fileLocation
     } else {
-      window.open(fileLocation, '_blank')
+      if(isMiniprogram.value) {
+        window.wx.openUrl({ url: fileLocation } )
+      }else {
+        window.open(fileLocation, '_blank')
+      }
     }
   }
 
@@ -124,4 +131,65 @@ export const useDocItem = () => {
     pictureLink
   }
 
+}
+
+export const useUpload = (directory) => {
+  
+  const loading = ref(false)
+  
+  // 给文件重命名
+  const rename = async file => {
+    const name = file.file.value.name
+    const justName = name.split('.').shift()
+    const res = await myDialog({
+      title: '将文件重命名',
+      placeholder: '请输入文件名称',
+      defaultValue: '',
+      describe: `${justName}`
+    })
+    const newName = name.replace(justName, res)
+    const newFile = new File([file.file.value], newName, {
+      type: file.file.value.type
+    })
+    return newFile
+  }
+
+  // 上传文件
+  const upload = async files => {
+    const refFiles = toRefs(files)
+    const newFiles = await rename(refFiles)
+    try {
+      Toast.loading({
+        message: '正在上传...',
+        forbidClick: true,
+      });
+      const formData = new FormData()
+      formData.append('file', newFiles)
+      const res = await request({
+        url: `/api/ctms/project/v2/my/doc/upload/${directory.id}`,
+        method: 'post',
+        headers: {
+         'Content-Type': 'multipart/form-data',
+        },
+        data: formData
+      })
+      const {success, msg} = res
+      Notify({ 
+        type: success ? 'success': 'danger', 
+        message: msg 
+      }); 
+      if(success) {
+        console.log('success')
+      }
+    }catch(err){
+      console.log(err)
+    }finally {
+      Toast.clear()
+    }
+  }
+
+  return {
+    loading,
+    upload
+  }
 }

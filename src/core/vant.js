@@ -4,7 +4,6 @@ import {
   TabbarItem,
   Button,
   Tag,
-  Col,
   Icon,
   Cell,
   Form,
@@ -35,7 +34,10 @@ import {
   ConfigProvider,
   Progress,
   Empty,
-  ActionSheet
+  ActionSheet,
+  Uploader,
+  Col,
+  Row
 } from 'vant';
 
 export default {
@@ -45,7 +47,6 @@ export default {
       NavBar,
       Button,
       Tag,
-      Col,
       Icon,
       Cell,
       Form,
@@ -77,7 +78,10 @@ export default {
       Steps,
       Progress,
       Empty,
-      ActionSheet
+      ActionSheet,
+      Uploader,
+      Col, 
+      Row  
     ].forEach(component => {
       app.use(component)
     })
