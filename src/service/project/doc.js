@@ -1,7 +1,8 @@
 import request from '@/core/axios'
-import { ref, toRefs, reactive, computed, inject } from 'vue'
+import { ref, toRefs, toRef, reactive, computed, inject } from 'vue'
 import myDialog from '@/components/common/MyDialog'
 import { Toast, Notify  } from 'vant';
+import Compressor from 'compressorjs';
 
 // 文档类别
 export const useCategory = () => {
@@ -138,40 +139,44 @@ export const useUpload = (directory) => {
   const loading = ref(false)
   
   // 给文件重命名
-  const rename = async file => {
-    const name = file.file.value.name
-    const justName = name.split('.').shift()
+  const rename = async originName => {
+    const [name, suffix] = originName.split('.')
     try {
-      alert(justName)
-      const res = await myDialog({
+      const newName = await myDialog({
         title: '将文件重命名',
         placeholder: '请输入文件名称',
-        defaultValue: '',
-        describe: `${justName}`
+        defaultValue: name,
+        describe: `${originName}`
       })
-      const newName = name.replace(justName, res)
-      const newFile = new File([file.file.value], newName, {
-        type: file.file.value.type
-      })
-      alert(`newFile: ${newFile.name}`)
-      return newFile
+      return [newName, suffix].join('.')
     }catch(err) {
-      return file
+      return originName
     }
   }
 
   // 上传文件
   const upload = async files => {
-    const refFiles = toRefs(files)
-    const newFiles = await rename(refFiles)
-    alert(newFiles)
+    const refFiles = toRef(files, 'file')
+    const { name } = refFiles.value
+    const newName = await rename(name)
     try {
+      // 压缩图片
+      const newFile = await new Promise((resolve, reject) => {
+        new Compressor(refFiles.value, {
+          maxWidth: 4096,
+          maxHeight: 4096,
+          success: resolve,
+          error: reject,
+        })
+      })
+      console.log('压缩前:', refFiles.value.size)
+      console.log('压缩后:', newFile.size)
       Toast.loading({
         message: '正在上传...',
         forbidClick: true,
       });
       const formData = new FormData()
-      formData.append('file', newFiles)
+      formData.append('file', newFile, newName)
       const res = await request({
         url: `/api/ctms/project/v2/my/doc/upload/${directory.id}`,
         method: 'post',
@@ -184,10 +189,8 @@ export const useUpload = (directory) => {
       Notify({ 
         type: success ? 'success': 'danger', 
         message: msg 
-      }); 
-      if(success) {
-        console.log('success')
-      }
+      });
+      if(!success) throw msg
     }catch(err){
       console.log(err)
     }finally {

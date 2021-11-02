@@ -29,8 +29,12 @@ const { onSelect, actions, showActionBar, pictureLink, showPicturePopup } = useD
 const { upload } = useUpload({ id: props.id })  
 
 const afterRead = async (file) => {
-  await upload(file)
-  load()
+  try {
+    await upload(file)
+    load()
+  }catch(err){
+    console.log(err)
+  }
 }
 
 const showImages = item => {
