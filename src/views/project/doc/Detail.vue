@@ -96,6 +96,7 @@ onMounted(load);
         class="btn-uploader"
         :after-read="afterRead" 
         multiple 
+        capture="camera"
         >
          <van-action-bar-button type="primary" text="上传文件" />
        </van-uploader>   
