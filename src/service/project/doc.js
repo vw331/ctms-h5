@@ -160,6 +160,11 @@ export const useUpload = (directory) => {
     const { name } = refFiles.value
     const newName = await rename(name)
     try {
+      Toast.loading({
+        message: '正在上传...',
+        forbidClick: true,
+        duration: 0
+      });
       // 压缩图片
       const newFile = await new Promise((resolve, reject) => {
         new Compressor(refFiles.value, {
@@ -171,10 +176,6 @@ export const useUpload = (directory) => {
       })
       console.log('压缩前:', refFiles.value.size)
       console.log('压缩后:', newFile.size)
-      Toast.loading({
-        message: '正在上传...',
-        forbidClick: true,
-      });
       const formData = new FormData()
       formData.append('file', newFile, newName)
       const res = await request({
@@ -194,6 +195,7 @@ export const useUpload = (directory) => {
     }catch(err){
       console.log(err)
     }finally {
+      alert('结束了')
       Toast.clear()
     }
   }

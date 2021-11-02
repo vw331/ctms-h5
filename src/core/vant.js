@@ -40,6 +40,8 @@ import {
   Row
 } from 'vant';
 
+Toast.setDefaultOptions({ duration: 10000 });
+
 export default {
   install: (app) => {
     [
