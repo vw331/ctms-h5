@@ -21,13 +21,13 @@ const app = createApp({
         if (val) {
           setRequestToken(val)
         }
-        if (oldVal && !val) {
+        else {
           const { fullPath } = useRoute()
           router.replace({
             name: 'Login',
             query: { redirect: fullPath },
           })
-        }
+        }  
       }
     }
   }

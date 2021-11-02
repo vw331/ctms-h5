@@ -195,7 +195,6 @@ export const useUpload = (directory) => {
     }catch(err){
       console.log(err)
     }finally {
-      alert('结束了')
       Toast.clear()
     }
   }
