@@ -73,6 +73,7 @@ export const useAll = () => {
 
   const getAll = async projectId => {
     try {
+      console.log(`------开始----`)
       loading.value = true
       const result = await Promise.all([
         request(`/api/ctms/project/detail?projectId=${projectId}`),
@@ -90,6 +91,7 @@ export const useAll = () => {
       throw '无权访问'
     } finally {
       loading.value = false
+      console.log(`------结束----`)
     }
   }
 

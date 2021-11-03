@@ -7,10 +7,16 @@ import Compressor from 'compressorjs';
 // 文档类别
 export const useCategory = () => {
   const loading = ref(false)
+
+  const categoryList = ref([])
+
   const getCategory = async (projectId) => {
     try {
       loading.value = true
       const res = await request(`/api/ctms/project/v2/directory/${projectId}/root/list`)
+      const {success, msg, data} = res
+      if(!success) throw msg
+      categoryList.value = data
       return res.data
     } catch (err) {
       console.log(err)
@@ -20,15 +26,18 @@ export const useCategory = () => {
   }
 
   return {
+    categoryList,
     getCategory,
     loading
   }
 }
 
-// 文件夹列表
+// 文件夹
 export const useCatalogue = () => {
   const loading = ref(false)
-  const getCatalogue = async params => {
+  const catalogueList = ref([])
+  // 文件夹列表
+  const getCatalogueList = async params => {
     try {
       loading.value = true
       const res = await request({
@@ -37,6 +46,7 @@ export const useCatalogue = () => {
       })
       const { data, success, msg } = res
       if (!success) throw msg
+      catalogueList.value = data
       return data
     } catch (err) {
       console.log(err)
@@ -46,7 +56,8 @@ export const useCatalogue = () => {
   }
 
   return {
-    getCatalogue,
+    getCatalogueList,
+    catalogueList,
     loading
   }
 }
@@ -54,16 +65,18 @@ export const useCatalogue = () => {
 // 文件列表
 export const useDocList = () => {
   const loading = ref(false)
-  const getDocList = async params => {
+  const directory = ref({})
+  const docList = ref([])
+  const getDocList = async directoryId => {
     try {
       loading.value = true
       const res = await request({
-        url: `/api/ctms/project/v2/directory/list`,
-        params
+        url: `/api/ctms/project/v2/my/doc/directory/${directoryId}`,
       })
       const { data, success, msg } = res
       if (!success) throw msg
-      return data
+      directory.value = data
+      docList.value = data.docList
     } catch (err) {
       console.log(err)
     } finally {
@@ -73,6 +86,8 @@ export const useDocList = () => {
 
   return {
     loading,
+    directory,
+    docList,
     getDocList
   }
 }
@@ -89,7 +104,6 @@ export const useDocItem = () => {
   const download = () => {
     console.log(activeItem)
   }
-
 
   const viewFile = () => {
     const { fileLocation } = activeItem
@@ -110,7 +124,6 @@ export const useDocItem = () => {
     Object.assign(activeItem, item)
     showActionBar.value = true
   }
-
 
   const actions = computed(() => {
 
@@ -174,8 +187,6 @@ export const useUpload = (directory) => {
           error: reject,
         })
       })
-      console.log('压缩前:', refFiles.value.size)
-      console.log('压缩后:', newFile.size)
       const formData = new FormData()
       formData.append('file', newFile, newName)
       const res = await request({

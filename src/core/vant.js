@@ -37,10 +37,9 @@ import {
   ActionSheet,
   Uploader,
   Col,
-  Row
+  Row,
+  NoticeBar 
 } from 'vant';
-
-Toast.setDefaultOptions({ duration: 10000 });
 
 export default {
   install: (app) => {
@@ -83,7 +82,8 @@ export default {
       ActionSheet,
       Uploader,
       Col, 
-      Row  
+      Row,
+      NoticeBar
     ].forEach(component => {
       app.use(component)
     })

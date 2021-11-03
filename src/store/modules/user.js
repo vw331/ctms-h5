@@ -2,6 +2,8 @@ import { setStore, getStore } from '@/util/store'
 
 const user = {
   state: {
+    defaultTitle: document.title,
+    title: '',
     token: getStore({name: 'token'}) || '',
     refreshToken: getStore({name: 'refreshToken'}) || '',
     userInfo: null,
@@ -29,6 +31,9 @@ const user = {
       state.refreshToken = ''
       setStore({name: 'token', content: ''})
       setStore({name: 'refreshToken', content: ''})
+    },
+    SET_TITLE: (state, title) => {
+      state.title = title ? `${title} - ${state.defaultTitle}` : state.defaultTitle
     }
   }
 }

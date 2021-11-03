@@ -29,6 +29,11 @@ const app = createApp({
           })
         }  
       }
+    },
+    '$store.state.user.title': {
+      handler(val) {
+        document.title = val
+      }
     }
   }
 })
@@ -38,5 +43,5 @@ app.use(store)
   .use(vantComponents)
   .mount('#app')
 
-app.config.globalProperties.foo = 'bar'
+app.config.globalProperties.$title = document.title
 app.config.globalProperties.$http = request

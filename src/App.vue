@@ -1,9 +1,9 @@
 <script setup>
-import { provide, ref, onMounted } from "vue";
+import { provide, ref, onMounted, toRef, watchEffect, watch } from "vue";
 const isMiniprogram = ref(false);
 const isWeixin = ref(false);
 
-onMounted(() => {
+onMounted(() => { 
   var ua = navigator.userAgent.toLowerCase();
   if (ua.match(/MicroMessenger/i) == "micromessenger") {
     isWeixin.value = true;

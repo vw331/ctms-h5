@@ -36,9 +36,5 @@ const { onLoad, onRefresh, refreshing, error, list, loading, finished } = useMes
 </template>
 
 <style lang="less" scoped>
-/* /deep/.message-item {
-  .van-cell__value {
-    width: 0
-  }
-} */
+
 </style>

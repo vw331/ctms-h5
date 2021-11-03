@@ -112,6 +112,6 @@ const router = createRouter({
 })
 
 router.beforeEach(globalInterceptor)
-router.afterEach(afterEnterInterceptor())
+router.afterEach(afterEnterInterceptor)
 
 export default router

@@ -1,20 +1,12 @@
 <script setup>
-import { inject, ref, onMounted, computed } from "vue";
+import { inject, ref, onMounted, computed, watch } from "vue";
 import Folder from "@/components/common/Folder";
 import { useCategory, useCatalogue } from "@/service/project/doc";
 
 const projectId = inject("projectId");
-const categoryList = ref([]);
-const catalogueList = ref([]);
 const categorySelected = ref("");
 const statusSelected = ref("");
 
-const categoryOption = computed(() =>
-  categoryList.value.map((item) => ({
-    text: item.name,
-    value: item.id,
-  }))
-);
 const statusOption = [
   { text: "全部", value: "" },
   { text: "待上传", value: "待上传" },
@@ -22,20 +14,30 @@ const statusOption = [
   { text: "已完成", value: "已完成" },
 ];
 
-const { getCategory } = useCategory();
-const { getCatalogue, loading } = useCatalogue();
+const { getCategory, categoryList } = useCategory();
+const { getCatalogueList, catalogueList, loading } = useCatalogue();
 
-const load = async () => {
-  catalogueList.value = await getCatalogue({
-    id: categorySelected.value,
-    status: statusSelected.value,
-  });
+const load = () => {
+  
 };
 
+const categoryOption = computed(() => {
+  return categoryList.value?.map(item => ({
+    text: item.name,
+    value: item.id
+  }))
+})
+
+watch([categorySelected, statusSelected], ([category, status]) => {
+  getCatalogueList({
+    id: category,
+    status,
+  });
+})
+
 onMounted(async () => {
-  categoryList.value = await getCategory(projectId);
-  categorySelected.value = categoryList.value[0].id;
-  load();
+  await getCategory(projectId);
+  categorySelected.value = categoryList.value.at(0)?.id
 });
 </script>
 

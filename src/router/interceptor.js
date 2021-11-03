@@ -37,13 +37,10 @@ export default async (to, from, next) => {
 }
 
 // 后置钩子
-export const afterEnterInterceptor = () => {
-  const originTitle = document.title
-  return (to) => {
-    const name = to.name
-    const { title } = to.meta
-    document.title = (title || name) + ' - ' + originTitle
-  }
+export const afterEnterInterceptor =  (to) => {
+  const name = to.name
+  const { title } = to.meta
+  store.commit('SET_TITLE', title)
 }
 
 // 项目拦截器
@@ -51,12 +48,14 @@ export const projectInterceptor = async (to, from, next) => {
   const { getAll, loading } = useAll()
 
   watchEffect(() => {
-    if (loading) {
+    if (loading.value) {
+      console.log('loading 开始')
       Toast.loading({
         message: '正在进入...',
         forbidClick: true,
       })
     } else {
+      console.log('loading 结束')
       Toast.clear()
     }
   })
