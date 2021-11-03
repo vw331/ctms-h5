@@ -2,25 +2,23 @@ import { setStore, getStore } from '@/util/store'
 
 const user = {
   state: {
-    defaultTitle: document.title,
-    title: '',
-    token: getStore({name: 'token'}) || '',
-    refreshToken: getStore({name: 'refreshToken'}) || '',
+    token: getStore({ name: 'token' }) || '',
+    refreshToken: getStore({ name: 'refreshToken' }) || '',
     userInfo: null,
     permission: null,
     roles: null,
   },
   actions: {
-    
+
   },
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token;
-      setStore({name: 'token', content: state.token})
+      setStore({ name: 'token', content: state.token })
     },
     SET_REFRESH_TOKEN: (state, refreshToken) => {
       state.refreshToken = refreshToken
-      setStore({name: 'refreshToken', content: state.refreshToken})
+      setStore({ name: 'refreshToken', content: state.refreshToken })
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
@@ -29,11 +27,8 @@ const user = {
       state.token = ''
       state.userInfo = null
       state.refreshToken = ''
-      setStore({name: 'token', content: ''})
-      setStore({name: 'refreshToken', content: ''})
-    },
-    SET_TITLE: (state, title) => {
-      state.title = title ? `${title} - ${state.defaultTitle}` : state.defaultTitle
+      setStore({ name: 'token', content: '' })
+      setStore({ name: 'refreshToken', content: '' })
     }
   }
 }

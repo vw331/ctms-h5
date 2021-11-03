@@ -7,7 +7,6 @@ import { watchEffect } from 'vue'
 // 权限守卫
 export default async (to, from, next) => {
   const { token, userInfo } = store.getters
-
   if (token) {
     // 已登录状态
     if (userInfo) {
@@ -18,7 +17,10 @@ export default async (to, from, next) => {
         await getUserInfo()
         next()
       } catch (err) {
-        next({ name: 'Login' })
+        next({
+          name: 'Login',
+          query: { redirect: to.fullPath }
+        })
       }
     }
   } else {
@@ -37,7 +39,7 @@ export default async (to, from, next) => {
 }
 
 // 后置钩子
-export const afterEnterInterceptor =  (to) => {
+export const afterEnterInterceptor = (to) => {
   const name = to.name
   const { title } = to.meta
   store.commit('SET_TITLE', title)

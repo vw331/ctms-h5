@@ -51,21 +51,21 @@ export const useLogin = (success) => {
           tenantId,
           username,
           password: md5(password),
-          grant_type, 
-          scope, 
-          type, 
+          grant_type,
+          scope,
+          type,
         }
       })
-      if(data.error_code) {
-        Notify({ type: 'danger', message: data.error_description});
-      }else {
-        Notify({ type: 'success', message: '登录成功!'});
+      if (data.error_code) {
+        Notify({ type: 'danger', message: data.error_description });
+      } else {
+        Notify({ type: 'success', message: '登录成功!' });
         store.commit('SET_TOKEN', data.access_token)
         success(data)
       }
-    }catch(error){
+    } catch (error) {
       console.log(error)
-    }finally {
+    } finally {
       loginLoading.value = false
     }
   }
@@ -88,9 +88,9 @@ export const useLogout = () => {
       logoutLoading.value = true
       await request('/api/blade-auth/oauth/logout')
       store.commit('CLEAR_USER')
-    }catch(err) {
+    } catch (err) {
       console.log(err)
-    }finally{
+    } finally {
       logoutLoading.value = false
     }
   }
@@ -107,7 +107,7 @@ export const useLogout = () => {
  * @returns 
  */
 export const useUserInfo = () => {
-  
+
   const userInfoLoading = ref(false)
   const getUserInfo = async () => {
     const loadingToast = Toast.loading({
@@ -119,9 +119,10 @@ export const useUserInfo = () => {
       userInfoLoading.value = true
       const data = await request('/api/blade-user/info')
       store.commit('SET_USER_INFO', data.data)
-    }catch(err) {
+    } catch (err) {
       console.log(err)
-    }finally {
+      throw err
+    } finally {
       loadingToast.clear()
       userInfoLoading.value = false
     }

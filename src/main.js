@@ -21,16 +21,9 @@ const app = createApp({
         if (val) {
           setRequestToken(val)
         }
-        else {
-          const { fullPath } = useRoute()
-          router.replace({
-            name: 'Login',
-            query: { redirect: fullPath },
-          })
-        }  
       }
     },
-    '$store.state.user.title': {
+    '$store.state.system.title': {
       handler(val) {
         document.title = val
       }
