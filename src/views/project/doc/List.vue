@@ -68,6 +68,7 @@ onMounted(async () => {
         :title-style="{
           width: '0 !important',
           overflow: 'hidden',
+          'padding-left': '5px',
           flex: 2,
         }"
         is-link
@@ -77,7 +78,7 @@ onMounted(async () => {
           <folder :isEmpty="item.docList.length == 0"></folder>
         </template>
         <template #title>
-          <p class="truncate pl-2">
+          <p class="truncate">
             {{ item.directoryPath.split("->").pop() }}
           </p>
         </template>

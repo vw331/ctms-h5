@@ -65,7 +65,7 @@ export const useCatalogue = () => {
 // 文件列表
 export const useDocList = () => {
   const loading = ref(false)
-  const directory = ref({})
+  const directory = reactive({})
   const docList = ref([])
   const getDocList = async directoryId => {
     try {
@@ -75,7 +75,7 @@ export const useDocList = () => {
       })
       const { data, success, msg } = res
       if (!success) throw msg
-      directory.value = data
+      Object.assign(directory, data)
       docList.value = data.docList
     } catch (err) {
       console.log(err)
@@ -153,12 +153,15 @@ export const useUpload = (directory) => {
   
   // 给文件重命名
   const rename = async originName => {
-    const [name, suffix] = originName.split('.')
+    const { directoryParents, id, docNum } = directory
+    const currentDirectory = directoryParents.at(-1).name
+    const suffix = originName.split('.').at(-1)
+    const defaultValue = `${currentDirectory}_${docNum+1}`
     try {
       const newName = await myDialog({
         title: '将文件重命名',
         placeholder: '请输入文件名称',
-        defaultValue: name,
+        defaultValue,
         describe: `${originName}`
       })
       return [newName, suffix].join('.')

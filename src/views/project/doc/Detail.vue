@@ -16,7 +16,7 @@ const route = useRoute()
 const store = useStore()
 const { getDocList, loading, directory, docList } = useDocList();
 const { onSelect, actions, showActionBar, pictureLink, showPicturePopup } = useDocItem();
-const { upload } = useUpload({ id: props.id })  
+const { upload } = useUpload(directory)  
 
 const load = async () => {
   getDocList(props.id);
@@ -38,15 +38,15 @@ const images = computed(() => {
 })
 
 const buttons = computed(() => {
-  return directory.value.buttons || []
+  return directory.buttons || []
 })
 
 const notice = computed(() => {
   const result = []
-  if(directory.value.isRequired) {
+  if(directory.isRequired) {
     result.push('当前需要上传文件')
   }
-  if(directory.value.isNeedApprove){
+  if(directory.isNeedApprove){
     result.push('文件需要审批')
   }
   return result.join(' , ')
@@ -79,7 +79,7 @@ const showImages = item => {
 }
 
 watch(directory, (val) => {
-  const name = val.directoryParents[0].name
+  const name = val.directoryParents.at(-1).name
   store.commit('SET_TITLE', name)
 })
 
