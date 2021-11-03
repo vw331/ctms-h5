@@ -17,16 +17,19 @@ const statusOption = [
 const { getCategory, categoryList } = useCategory();
 const { getCatalogueList, catalogueList, loading } = useCatalogue();
 
-const load = () => {
-  
-};
-
 const categoryOption = computed(() => {
   return categoryList.value?.map(item => ({
     text: item.name,
     value: item.id
   }))
 })
+
+const formatLabel = item => {
+  const result = []
+  if(item.docNum > 0) result.push(`${item.docNum}个文件`)
+  if(item.isNeedApprove) result.push('需要审批')
+  return result.join(',')
+}
 
 watch([categorySelected, statusSelected], ([category, status]) => {
   getCatalogueList({
@@ -45,12 +48,10 @@ onMounted(async () => {
   <div class="relative">
     <van-dropdown-menu>
       <van-dropdown-item
-        @change="load"
         v-model="categorySelected"
         :options="categoryOption"
       />
       <van-dropdown-item
-        @change="load"
         v-model="statusSelected"
         :options="statusOption"
       />
@@ -83,10 +84,7 @@ onMounted(async () => {
           </p>
         </template>
         <template #label>
-          <span v-if="item.docList.length"
-            >{{ item.docList.length }} 个文件</span
-          >
-          <span v-if="item.isNeedApprove">需要审批</span>
+          <span>{{ formatLabel(item) }}</span>
         </template>
         <template #value>
           <van-tag v-if="item.status == '待上传'" type="warning"
