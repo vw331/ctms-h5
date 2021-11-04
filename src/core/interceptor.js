@@ -1,12 +1,17 @@
 import { Toast } from 'vant'
 import store from '@/store'
+import { ref } from 'vue'
+import { CancelToken  } from 'axios'
+
+// 取消队列
+const cancleQueue = ref([])
 
 Toast.allowMultiple()
 
 /**
  * 异常提示函数
- */
- const tip = (message, type = 'fail') => {
+  */
+const tip = (message, type = 'fail') => {
   Toast({
     message,
     type
@@ -16,8 +21,8 @@ Toast.allowMultiple()
 /**
  * 统一异常处理
  * @param(Number) status 请求失败状态码
- **/
- const errorHandle = (status, msg) => {
+  **/
+const errorHandle = (status, msg) => {
   //状态码判断
   switch (status) {
   //401: 未登录状态
@@ -34,7 +39,7 @@ Toast.allowMultiple()
     tip(msg || '404,请求的资源不存在')
     break;
   case 500:
-    tip('500,服务错误')
+    tip('500, 服务错误')
     break;
   default:
     console.warn(msg)
@@ -48,6 +53,10 @@ Toast.allowMultiple()
 const preHandle = () => {
   return [
     function(config) {
+      config.cancelToken = new CancelToken(function executor(c) {
+        // executor 函数接收一个 cancel 函数作为参数
+        cancleQueue.value.push(c)
+      })
       return config
     },
     function(error) {
@@ -62,11 +71,16 @@ const preHandle = () => {
 const responseHandle = () => {
   return [
     function(res) {
+      cancleQueue.value.shift()
       return res.status === 200 ? Promise.resolve(res.data) : Promise.reject(res)
     },
     function(error) {
+      cancleQueue.value.shift()
       const { response } = error
       if (response) {
+        if(response.status == '401') {
+          cancleQueue.value.forEach(cancle => Reflect.apply(cancle, undefined, [401]))
+        }
         errorHandle(response.status, response.data.msg)
         return Promise.reject(response.statusText)
       } else {

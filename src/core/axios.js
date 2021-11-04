@@ -8,7 +8,6 @@ const request = axios.create({
   //baseURL: '/api',
   timeout: 1000 * 100 
 })
-
 request.defaults.headers.post['Content-Type'] = 'application/json'
 request.defaults.headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`;
 /**

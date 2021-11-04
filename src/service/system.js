@@ -103,6 +103,30 @@ export const useLogout = () => {
 
 }
 
+export const useRefreshToken = () => {
+  const { user } = store.state
+  const { refreshToken, userInfo: { tenantId } } = user
+
+  const params = {
+    tenantId,
+    refresh_token: refreshToken,
+    grant_type: "refresh_token",
+    scope: "all",
+  }
+  const refresh = async delay => {
+    const res = await request({
+      url: `/api/blade-auth/oauth/token`,
+      method: 'post',
+      headers: {
+        'Tenant-Id': tenantId,
+      },
+      params,  
+    })
+    console.log(res)
+  } 
+  refresh(3000)
+}
+
 /**
  * 用户信息
  * @returns 

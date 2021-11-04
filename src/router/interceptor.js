@@ -53,13 +53,11 @@ export const projectInterceptor = async (to, from, next) => {
 
   watchEffect(() => {
     if (loading.value) {
-      console.log('loading 开始')
       Toast.loading({
         message: '正在进入...',
         forbidClick: true,
       })
     } else {
-      console.log('loading 结束')
       Toast.clear()
     }
   })

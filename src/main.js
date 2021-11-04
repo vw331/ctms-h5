@@ -10,6 +10,7 @@ import '@/style/styles.css'
 import '@/style/root.css'
 
 import request, { setRequestToken } from '@/core/axios'
+import { useRefreshToken } from '@/service/system' 
 
 const app = createApp({
   ...App,
@@ -21,6 +22,11 @@ const app = createApp({
         if (val) {
           setRequestToken(val)
         }
+      }
+    },
+    '$store.state.user.userInfo': {
+      handler(val) {
+        useRefreshToken()
       }
     },
     '$store.state.system.title': {
