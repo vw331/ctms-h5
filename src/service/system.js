@@ -31,7 +31,7 @@ export const useCaptchaImg = () => {
  * @param {*} async 
  */
 
-export const useLogin = (success) => {
+export const useLogin = () => {
 
   const loginLoading = ref(false)
 
@@ -61,7 +61,8 @@ export const useLogin = (success) => {
       } else {
         Notify({ type: 'success', message: '登录成功!' });
         store.commit('SET_TOKEN', data.access_token)
-        success(data)
+        store.commit('SET_REFRESH_TOKEN', data.refresh_token)
+        return true
       }
     } catch (error) {
       console.log(error)
@@ -131,5 +132,36 @@ export const useUserInfo = () => {
   return {
     getUserInfo,
     userInfoLoading
+  }
+}
+
+/**
+ * 初始化数据
+ */
+export const useInitialization = () => {
+  const loading = ref(false)
+  const initAll = async () => {
+    try {
+      loading.value = true
+      const res = await Promise.all([
+        request('/api/blade-system/dict/list'),
+        request('/api/blade-system/dict-biz/list'),
+        request('/api/blade-system/menu/routes'),
+        request('/api/blade-system/menu/buttons')
+      ])
+      const [dict, dictBiz, menus, buttons] = res.map(item => item.data)
+      store.commit('SET_INIT_DATA', {
+        dict, dictBiz, menus, buttons
+      })
+    }catch(err) {
+      console.log(err)
+    }finally {
+      loading.value = false
+    }
+  }
+
+  return {
+    loading,
+    initAll
   }
 }

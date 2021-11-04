@@ -1,7 +1,7 @@
 import store from '@/store'
 import { Toast } from 'vant';
-import { useUserInfo } from '@/service/system'
-import { useAll } from '@/service/project'
+import { useUserInfo, useInitialization } from '@/service/system'
+import { useAll, initAll } from '@/service/project'
 import { watchEffect } from 'vue'
 
 // 权限守卫
@@ -13,8 +13,10 @@ export default async (to, from, next) => {
       next()
     } else {
       const { getUserInfo } = useUserInfo()
+      const { initAll } = useInitialization()
       try {
         await getUserInfo()
+        await initAll()
         next()
       } catch (err) {
         next({

@@ -2,7 +2,7 @@
   <div class="h-screen flex flex-col justify-center">
     <h3 class="text-xl p-4">CTMS 登录</h3>
     <div>
-      <van-form @submit="login">
+      <van-form @submit="handleLogin">
         <van-cell-group inset>
           <van-field
             autofocus
@@ -90,13 +90,13 @@ export default {
     const { captchaImg, captchaKey, getCaptchaImg } = useCaptchaImg();
     const router = useRouter();
     const route = useRoute();
+    const { login, loginLoading } = useLogin();
 
-    const loadingSuccess = () => {
+    const handleLogin = async form => {
+      await login(form)
       const { redirect = "/" } = route.query;
       router.replace(redirect);
-    };
-
-    const { login, loginLoading } = useLogin(loadingSuccess);
+    } 
 
     onMounted(() => {
       getCaptchaImg();
@@ -104,6 +104,7 @@ export default {
 
     return {
       login,
+      handleLogin,
       loginLoading,
       captchaKey,
       captchaImg,
