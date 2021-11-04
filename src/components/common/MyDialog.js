@@ -1,15 +1,14 @@
 import { createApp } from 'vue'
-import { Button,CellGroup,  Dialog, Form, Field } from 'vant';
+import { Button, CellGroup, Cell, Dialog, Form, Field } from 'vant';
 import Prompt from './Prompt'
 
-export default (option) => {
+export default (dynamicComponent = Prompt, option) => {
   return new Promise(function(resolve, reject) {
-
     const dom = document.createElement('div')
     document.body.appendChild(dom)
 
     let app = createApp({
-      ...Prompt,
+      ...dynamicComponent,
     }, {
       ...option,
       closed: () => {
@@ -27,6 +26,7 @@ export default (option) => {
     app.use(Button)
     app.use(Field)
     app.use(CellGroup)
+    app.use(Cell)
     app.use(Dialog)
     app.mount(dom)
 

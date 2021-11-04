@@ -1,7 +1,7 @@
 <script setup>
 import { inject, ref, onMounted, computed, watch } from "vue";
 import Folder from "@/components/common/Folder";
-import { useCategory, useCatalogue } from "@/service/project/doc";
+import { useCategory, useDirectory } from "@/service/project/doc";
 
 const projectId = inject("projectId");
 const categorySelected = ref("");
@@ -15,7 +15,7 @@ const statusOption = [
 ];
 
 const { getCategory, categoryList } = useCategory();
-const { getCatalogueList, catalogueList, loading } = useCatalogue();
+const { getCatalogueList, catalogueList, loading } = useDirectory();
 
 const categoryOption = computed(() => {
   return categoryList.value?.map(item => ({

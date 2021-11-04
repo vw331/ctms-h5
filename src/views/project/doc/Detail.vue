@@ -3,7 +3,7 @@ import { defineProps, toRef, toRefs , onMounted, computed, watchEffect, watch } 
 import { ImagePreview } from 'vant';
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { useDocList, useDocItem, useUpload } from "@/service/project/doc";
+import { useDirectory, useDocList, useDocItem, useUpload } from "@/service/project/doc";
 import File from "@/components/common/File";
 import { isPicture } from '@/util/whatIsThat'
 
@@ -12,15 +12,16 @@ const props = defineProps({
   id: String,
 });
 
-const route = useRoute()
-const store = useStore()
-const { getDocList, loading, directory, docList } = useDocList();
-const { onSelect, actions, showActionBar, pictureLink, showPicturePopup } = useDocItem();
-const { upload } = useUpload(directory)  
-
 const load = async () => {
   getDocList(props.id);
 }
+
+const route = useRoute()
+const store = useStore()
+const { confirmDirectory } = useDirectory()
+const { getDocList, loading, directory, docList } = useDocList();
+const { onSelect, showActionBar, actions } = useDocItem(load);
+const { upload } = useUpload(directory)  
 
 const afterRead = async (file) => {
   try {
@@ -129,6 +130,7 @@ onMounted(load);
           </p>
         </template>
         <template #label class="text-xs">
+          <span class="mr-2">版本: {{ item.version }}</span>
           <span>{{ item.uploadTime }}</span>
         </template>
         <template #value>
@@ -142,7 +144,7 @@ onMounted(load);
 
     <div style="height: 50px">
       <van-action-bar>
-        <van-action-bar-button v-if="buttons.includes('confirm')" type="success" text="确认完成" />
+        <van-action-bar-button v-if="buttons.includes('confirm')" type="success" text="确认完成" @click="confirmDirectory(directory)"/>
         <van-uploader 
           v-if="buttons.includes('upload_file')" 
           class="btn-uploader"
@@ -160,14 +162,6 @@ onMounted(load);
       cancel-text="取消"
       close-on-click-action
     />
-
-    <van-popup
-      v-model:show="showPicturePopup"
-      closeable
-      :style="{ width: '100%' }"
-    >
-      <img :src="pictureLink" alt="" />
-    </van-popup>
   </div>
 </template>
 

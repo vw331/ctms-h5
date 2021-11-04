@@ -1,7 +1,9 @@
 import request from '@/core/axios'
 import { ref, toRefs, toRef, reactive, computed, inject } from 'vue'
 import myDialog from '@/components/common/MyDialog'
-import { Toast, Notify  } from 'vant';
+import EditFile from '@/components/project/file/EditFile'
+import ViewFile from '@/components/project/file/ViewFile'
+import { Toast, Notify, Dialog  } from 'vant';
 import Compressor from 'compressorjs';
 
 // 文档类别
@@ -33,7 +35,7 @@ export const useCategory = () => {
 }
 
 // 文件夹
-export const useCatalogue = () => {
+export const useDirectory = () => {
   const loading = ref(false)
   const catalogueList = ref([])
   // 文件夹列表
@@ -55,9 +57,29 @@ export const useCatalogue = () => {
     }
   }
 
+  // 确认完成
+  const confirmDirectory = async directory => {
+    try {
+      const { docNum } = directory
+      let message = ''
+      if(docNum.length == 0) {
+        message = '当前文件夹没有文件，确认已经完成了？'
+      }else {
+        message = '确认已经完成了？'
+      }
+      await Dialog.confirm({
+        title: '提醒',
+        message
+      })
+    }catch(err) {
+      console.log(err)
+    }
+  }
+
   return {
     getCatalogueList,
     catalogueList,
+    confirmDirectory,
     loading
   }
 }
@@ -93,56 +115,118 @@ export const useDocList = () => {
 }
 
 // 文件详情
-export const useDocItem = () => {
+export const useDocItem = (reload) => {
 
   const activeItem = reactive({})
   const showActionBar = ref(false)
-  const showPicturePopup = ref(false)
-  const pictureLink = ref('')
   const isMiniprogram = inject('isMiniprogram')
 
   const download = () => {
     console.log(activeItem)
   }
 
-  const viewFile = () => {
-    const { fileLocation } = activeItem
-    const type = fileLocation.split('/').pop().split('.').pop()
-    if (['png', 'jpg', 'jpeg'].includes(type)) {
-      showPicturePopup.value = true
-      pictureLink.value = activeItem.fileLocation
-    } else {
-      if(isMiniprogram.value) {
-        window.wx.openUrl({ url: fileLocation } )
-      }else {
-        window.open(fileLocation, '_blank')
-      }
+  // 查看
+  const view = () => {
+    myDialog(ViewFile, { data: activeItem })
+  }
+
+  // 删除图片
+  const deleteFile = async () => {
+    try {
+      await Dialog.confirm({
+        title: '提醒',
+        message: `确认要删除${activeItem.name}?`,
+      })
+      const res = await request({
+        url: `/api/ctms/project/v2/my/doc/${activeItem.id}`,
+        method: 'DELETE'
+      })
+      const { msg, success } = res
+      Notify({
+        type: success ? 'success': 'error',
+        message: msg
+      })
+      if(success) reload()
+    }catch(err){
+      console.error(err)
     }
   }
 
+  // 修改
+  const edit = async () => {
+    try {
+      const name = activeItem.name
+      const resName = await myDialog(EditFile, {
+        defaultValue: {
+          name,
+          version: activeItem.version
+        },
+      })
+      const res = await request({
+        url: `/api/ctms/project/v2/my/doc`,
+        method: 'put',
+        data: {
+          fileName: resName.name,
+          fileVersion: resName.version,
+          id: activeItem.id
+        }
+      })
+      const { msg, success } = res
+      Notify({
+        type: success ? 'success': 'error',
+        message: msg
+      })
+      if(success) reload()
+    }catch(err) {
+      console.log(err)
+    }
+  }
+
+  // 归档
+  const archive = async () => {
+    try {
+      await Dialog.confirm({
+        title: '提醒',
+        message: `确认要将 ${activeItem.name} 归档?`,
+      })
+      const res = await request({
+        url: `/api/ctms/project/v2/my/doc/${activeItem.id}/archive`,
+        method: 'put'
+      })
+      const { msg, success } = res
+      Notify({
+        type: success ? 'success': 'error',
+        message: msg
+      })
+      if(success) reload()
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  // 选中
   const onSelect = item => {
     Object.assign(activeItem, item)
     showActionBar.value = true
   }
 
   const actions = computed(() => {
-
-    return [
-      { name: "预览", callback: viewFile },
-      { name: "下载", callback: download },
-      { name: "重命名" },
-      { name: "删除" },
-      { name: "提交审核" },
-      { name: "归档" }
+    const buttons = activeItem.buttons || []
+    const result = [
+      { name: "详情", callback: view }, 
+      { name: "下载", callback: download }
     ]
+    if(buttons.includes('edit')) result.push({ name: "修改", callback: edit }) 
+    if(buttons.includes('archive')) result.push({ name: "归档",  callback: archive }) 
+    if(buttons.includes('delete')) result.push({ name: "删除", color: '#ee0a24', callback: deleteFile })
+
+    return result
   })
 
   return {
     onSelect,
-    actions,
     showActionBar,
-    showPicturePopup,
-    pictureLink
+    actions,
   }
 
 }
@@ -158,7 +242,7 @@ export const useUpload = (directory) => {
     const suffix = originName.split('.').at(-1)
     const defaultValue = `${currentDirectory}_${docNum+1}`
     try {
-      const newName = await myDialog({
+      const newName = await myDialog(undefined, {
         title: '将文件重命名',
         placeholder: '请输入文件名称',
         defaultValue,

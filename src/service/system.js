@@ -122,7 +122,6 @@ export const useRefreshToken = () => {
       },
       params,  
     })
-    console.log(res)
   } 
   refresh(3000)
 }
