@@ -1,26 +1,18 @@
+<script setup>
+import { useDic } from '@/service/dic'
+const { transformDic } = useDic()
+
+const result = transformDic('notice', '1')
+console.log(result)
+</script>
+
+
 <template>
   <div class="about">
-    <button @click="propmt">popmpt</button>
+    {{ $filter.dic('notice', '1') }}
+  </div>
+  <div class="about">
+    {{ $filter.dic('issue_monitory_type', 'investigator') }}
   </div>
 </template>
 
-<script>
-import myDialog from '@/components/common/MyDialog'
-
-export default {
-  setup() {
-    
-  },
-  created() { 
-  },
-  methods: {
-    async propmt() {
-      const result = await myDialog({
-        title: '修改文件名称',
-        defaultValue: '申请书.jpg'
-      })
-      console.log(result)
-    }    
-  }
-}
-</script>

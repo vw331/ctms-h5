@@ -220,8 +220,11 @@ export const useDocItem = (reload) => {
         message: `确认要将 ${activeItem.name} 归档?`,
       })
       const res = await request({
-        url: `/api/ctms/project/v2/my/doc/${activeItem.id}/archive`,
-        method: 'put'
+        url: `/api/ctms/project/v2/my/doc/archive`,
+        method: 'put',
+        data: { 
+          docIds: [activeItem.id]
+        }
       })
       const { msg, success } = res
       Notify({

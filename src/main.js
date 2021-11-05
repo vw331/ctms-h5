@@ -6,7 +6,6 @@ import store from './store'
 import vantComponents from '@/core/vant'
 import { injection } from '@/mixin'
 import * as $filters from '@/util/filter'
-
 import '@/style/styles.css'
 import '@/style/root.css'
 
