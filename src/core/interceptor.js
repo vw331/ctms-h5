@@ -53,6 +53,13 @@ const errorHandle = (status, msg) => {
 const preHandle = () => {
   return [
     function(config) {
+      if(config.$loading) {
+        config.$loadingInstance = Toast.loading({
+          message: config.$loading,
+          forbidClick: true,
+          duration: config.timeout
+        });
+      }
       config.cancelToken = new CancelToken(function executor(c) {
         // executor 函数接收一个 cancel 函数作为参数
         cancleQueue.value.push(c)
@@ -72,7 +79,12 @@ const responseHandle = () => {
   return [
     function(res) {
       cancleQueue.value.shift()
-      return res.status === 200 ? Promise.resolve(res.data) : Promise.reject(res)
+      // 跳过拦截器
+      const { $originalResponse = false, $loading = false } = res.config
+      if($loading) {
+        res.config.$loadingInstance.clear()
+      }
+      return res.status === 200 ? Promise.resolve($originalResponse ? res : res.data) : Promise.reject(res)
     },
     function(error) {
       cancleQueue.value.shift()

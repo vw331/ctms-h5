@@ -65,6 +65,7 @@ onMounted(async () => {
         v-for="item in catalogueList"
         :key="item.id"
         :required="item.isRequired"
+        class="flex-wrap"
         size="large"
         :title-style="{
           width: '0 !important',
@@ -99,7 +100,7 @@ onMounted(async () => {
           <van-tag v-else type="danger">{{ item.status }}</van-tag>
         </template>
         <template #extra>
-          <div v-if="item.remark" class="w-full text-xs">{{ item.remark }}</div>
+          <div v-if="item.remark" class="w-full text-red-600 text-right text-xs">{{ item.remark }}</div>
         </template>
       </van-cell>
     </van-cell-group>

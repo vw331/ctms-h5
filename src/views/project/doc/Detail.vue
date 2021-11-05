@@ -32,6 +32,15 @@ const afterRead = async (file) => {
   }
 }
 
+const confirmCompletion = async () => {
+  try {
+    await confirmDirectory(directory)
+    load()
+  }catch(err){
+    console.log(err)
+  }
+} 
+
 const images = computed(() => {
   return docList.value
     .map(item => item.fileLocation)
@@ -51,6 +60,10 @@ const notice = computed(() => {
     result.push('文件需要审批')
   }
   return result.join(' , ')
+})
+
+const remark = computed(() => {
+  return directory.remark ? `未上传的原因： ${directory.remark}` : null
 })
 
 const getAuditStatusType = type => {
@@ -91,6 +104,8 @@ onMounted(load);
 <template>
   <div>
     <van-notice-bar v-if="notice" left-icon="info-o" :text="notice">
+    </van-notice-bar>
+    <van-notice-bar v-if="remark" color="#1989fa" background="#ecf9ff" :text="remark">
     </van-notice-bar>
     <div v-if="loading" class="text-center py-6">
       <van-loading />
@@ -142,9 +157,12 @@ onMounted(load);
       </van-cell>
     </van-cell-group>
 
-    <div style="height: 50px">
+    <div style="height: 50px" v-if="buttons.length">
       <van-action-bar>
-        <van-action-bar-button v-if="buttons.includes('confirm')" type="success" text="确认完成" @click="confirmDirectory(directory)"/>
+        <van-action-bar-button 
+          v-if="buttons.includes('confirm')" 
+          type="success" text="确认完成"
+          @click="confirmCompletion(directory)"/>
         <van-uploader 
           v-if="buttons.includes('upload_file')" 
           class="btn-uploader"

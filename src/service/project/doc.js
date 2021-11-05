@@ -4,6 +4,7 @@ import myDialog from '@/components/common/MyDialog'
 import EditFile from '@/components/project/file/EditFile'
 import ViewFile from '@/components/project/file/ViewFile'
 import { Toast, Notify, Dialog  } from 'vant';
+import { downloadFile, useFileAgent } from '@/util/tools'
 import Compressor from 'compressorjs';
 
 // 文档类别
@@ -60,19 +61,45 @@ export const useDirectory = () => {
   // 确认完成
   const confirmDirectory = async directory => {
     try {
-      const { docNum } = directory
-      let message = ''
-      if(docNum.length == 0) {
-        message = '当前文件夹没有文件，确认已经完成了？'
+      const { id, docNum, isRequired } = directory
+      let message, remark;
+      if(docNum == 0) {
+        if(isRequired) {
+          message = '当前文件必须上传文件，若没有，请填写未上传的原因！'
+        }else {
+          message = '当前文件夹没有文件，确认已经完成了？'
+        }
       }else {
         message = '确认已经完成了？'
       }
-      await Dialog.confirm({
-        title: '提醒',
-        message
+      if(isRequired) {
+        remark = await myDialog(undefined, {
+          title: '请填写原因',
+          describe: message,
+          placeholder: '请填写文件缺乏的原因'
+        })
+        console.log(remark)
+      }else {
+        await Dialog.confirm({
+          title: '提醒',
+          message
+        })
+      }
+      const res = await request({
+        url: `/api/ctms/project/v2/my/doc/directory/${id}/confirm`,
+        method: 'put',
+        params: {remark}
       })
+      const { success, msg} = res
+      Notify({
+        type: success ? 'success' : 'error',
+        message: msg
+      })
+      if(!success) throw msg
+      return success     
     }catch(err) {
       console.log(err)
+      return err
     }
   }
 
@@ -122,7 +149,10 @@ export const useDocItem = (reload) => {
   const isMiniprogram = inject('isMiniprogram')
 
   const download = () => {
-    console.log(activeItem)
+    const { fileLocation, name, version } = activeItem
+    const realName = name.split('.').shift() + `_${version}`
+    const agentFile = useFileAgent(fileLocation, realName)
+    downloadFile(agentFile)
   }
 
   // 查看
@@ -204,6 +234,11 @@ export const useDocItem = (reload) => {
     }
   }
 
+  // 提交审批
+  const approval = async () => {
+    Dialog({message: '当前暂不支持，请前往web端操作'})
+  }
+
   // 选中
   const onSelect = item => {
     Object.assign(activeItem, item)
@@ -218,6 +253,7 @@ export const useDocItem = (reload) => {
     ]
     if(buttons.includes('edit')) result.push({ name: "修改", callback: edit }) 
     if(buttons.includes('archive')) result.push({ name: "归档",  callback: archive }) 
+    if(buttons.includes('check')) result.push({ name: '提交审批', callback: approval})
     if(buttons.includes('delete')) result.push({ name: "删除", color: '#ee0a24', callback: deleteFile })
 
     return result
@@ -237,29 +273,33 @@ export const useUpload = (directory) => {
   
   // 给文件重命名
   const rename = async originName => {
-    const { directoryParents, id, docNum } = directory
+    const { directoryParents, id, docNum, docList } = directory
     const currentDirectory = directoryParents.at(-1).name
     const suffix = originName.split('.').at(-1)
-    const defaultValue = `${currentDirectory}_${docNum+1}`
+    const maxVersion = docList.map(item => item.version).sort().at(-1) || '1.0'
+    const defaultName = `${currentDirectory}_${docNum+1}.${suffix}`
     try {
-      const newName = await myDialog(undefined, {
-        title: '将文件重命名',
-        placeholder: '请输入文件名称',
-        defaultValue,
-        describe: `${originName}`
+      const resName = await myDialog(EditFile, {
+        defaultValue: {
+          name: defaultName,
+          version: maxVersion
+        },
       })
-      return [newName, suffix].join('.')
+      return {
+        name: [resName.name, suffix].join('.'),
+        version: resName.version
+      }
     }catch(err) {
-      return originName
+      throw new Error(err)
     }
   }
 
   // 上传文件
   const upload = async files => {
     const refFiles = toRef(files, 'file')
-    const { name } = refFiles.value
-    const newName = await rename(name)
     try {
+      const { name: originName } = refFiles.value
+      const {name, version} = await rename(originName)
       Toast.loading({
         message: '正在上传...',
         forbidClick: true,
@@ -275,7 +315,8 @@ export const useUpload = (directory) => {
         })
       })
       const formData = new FormData()
-      formData.append('file', newFile, newName)
+      formData.append('file', newFile, name)
+      formData.append('version', version)
       const res = await request({
         url: `/api/ctms/project/v2/my/doc/upload/${directory.id}`,
         method: 'post',
@@ -291,7 +332,7 @@ export const useUpload = (directory) => {
       });
       if(!success) throw msg
     }catch(err){
-      console.log(err)
+      throw Error(err)
     }finally {
       Toast.clear()
     }
