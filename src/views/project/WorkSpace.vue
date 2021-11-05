@@ -38,7 +38,7 @@ const active = ref(0);
     ></div>
   </div>
 
-  <van-tabs v-model:active="active">
+  <van-tabs sticky v-model:active="active">
     <van-tab title="动态">
       <project-news :projectId="projectId"></project-news>
     </van-tab>
@@ -49,7 +49,7 @@ const active = ref(0);
       <center-list :center="center"></center-list>
     </van-tab>
     <van-tab title="项目组">
-      <mem-list :mem="mem"></mem-list>
+      <mem-list :mem="mem" :center="center"></mem-list>
     </van-tab>
     <van-tab title="问题">问题</van-tab>
   </van-tabs>

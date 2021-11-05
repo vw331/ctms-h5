@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import { Button, CellGroup, Cell, Dialog, Form, Field } from 'vant';
+import { Button, CellGroup, Cell, Icon, Dialog, Form, Field } from 'vant';
+import * as $filters from '@/util/filter'
 import Prompt from './Prompt'
 
 export default (dynamicComponent = Prompt, option) => {
@@ -21,8 +22,12 @@ export default (dynamicComponent = Prompt, option) => {
         resolve(result)
       }
     })
-
+    app.config.globalProperties.$filter = Object.keys($filters).reduce((curr, key) => {
+      curr[key] = $filters[key];
+      return curr 
+    }, {})
     app.use(Form)
+    app.use(Icon)
     app.use(Button)
     app.use(Field)
     app.use(CellGroup)

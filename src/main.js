@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import vantComponents from '@/core/vant'
 import { injection } from '@/mixin'
+import * as $filters from '@/util/filter'
 
 import '@/style/styles.css'
 import '@/style/root.css'
@@ -37,10 +38,14 @@ const app = createApp({
   }
 })
 
+app.config.globalProperties.$title = document.title
+app.config.globalProperties.$http = request
+app.config.globalProperties.$filter = Object.keys($filters).reduce((curr, key) => {
+  curr[key] = $filters[key];
+  return curr 
+}, {})
+
 app.use(store)
   .use(router)
   .use(vantComponents)
   .mount('#app')
-
-app.config.globalProperties.$title = document.title
-app.config.globalProperties.$http = request
