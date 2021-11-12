@@ -8,4 +8,5 @@ export default  {
     const dictValue = dictAll.find(item => item?.dictKey == key)?.dictValue
     return dictValue
   },
+  projectId: state => state.project.projectId
 }

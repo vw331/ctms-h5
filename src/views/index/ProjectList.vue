@@ -16,7 +16,7 @@ const { loading, list, onLoad, finished, onRefresh, refreshing, } = useProjectLi
         class="project-item-cell"
         :key="item" 
         :title="item.projectName" 
-        :label="`项目负责人: ${item.studyLeader || '-'}`"
+        :label="`创建人: ${item.createUsername || '-'}`"
         :to="{name: 'paoject', params: { projectId: item.id}}"
       >
         <template #icon>

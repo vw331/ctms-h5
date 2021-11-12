@@ -114,4 +114,8 @@ const router = createRouter({
 router.beforeEach(globalInterceptor)
 router.afterEach(afterEnterInterceptor)
 
+router.onError(err => {
+  console.log(`路由出错了:`, err)
+})
+
 export default router

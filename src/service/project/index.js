@@ -1,4 +1,5 @@
 import request from '@/core/axios'
+import store from '@/store/index'
 import { ref } from 'vue'
 
 // 项目列表
@@ -73,6 +74,7 @@ export const useAll = () => {
 
   const getAll = async projectId => {
     try {
+      store.commit('SET_PROJECT_ID', projectId)
       loading.value = true
       const result = await Promise.all([
         request(`/api/ctms/project/detail?projectId=${projectId}`),

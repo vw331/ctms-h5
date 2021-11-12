@@ -53,6 +53,14 @@ const errorHandle = (status, msg) => {
 const preHandle = () => {
   return [
     function(config) {
+      // 是否是项目接口
+      if(/ctms\/project/.test(config.url)) {
+        config.headers["projectId"] = config.params?.projectId || store.getters.projectId
+      }else {
+        delete config.headers.projectId
+      }
+      
+      // 是否使用全局Loading
       if(config.$loading) {
         config.$loadingInstance = Toast.loading({
           message: config.$loading,
