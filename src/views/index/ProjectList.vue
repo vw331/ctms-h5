@@ -28,6 +28,9 @@ const { loading, list, onLoad, finished, onRefresh, refreshing, } = useProjectLi
             :src="item.projectIcon"
           />
         </template>
+        <template #value>
+          <van-tag v-if="['stop', 'end'].includes(item.projectStatus)" type="danger">{{item.projectStatusDesc}}</van-tag>
+        </template>
       </van-cell>
     </van-list>
   </van-pull-refresh>

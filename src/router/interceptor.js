@@ -19,6 +19,8 @@ export default async (to, from, next) => {
         await initAll()
         next()
       } catch (err) {
+        console.log(err)
+        store.commit('CLEAR_USER')
         next({
           name: 'Login',
           query: { redirect: to.fullPath }

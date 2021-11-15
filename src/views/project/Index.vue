@@ -1,29 +1,22 @@
 
 <template>
   <div class="bg-gray-100 min-h-screen">
-    <van-nav-bar fixed placeholder :title="title" right-text="" z-index="99">
+    <van-nav-bar fixed placeholder right-text="" z-index="99">
       <template #left>
         <van-icon @click="showPopup = !showPopup" name="wap-nav" size="18" />
       </template>
-      <!--
       <template #title>
-        <div class="px-4">
-          <van-dropdown-menu>
-            <van-dropdown-item
-              teleport="body"
-              v-model="value"
-              :options="options"
-            />
-          </van-dropdown-menu>
-        </div>
+       <p>{{title}}</p>
       </template>
-      -->
       <template #right>
         <router-link :to="{ name: 'ProjectList' }">
           <van-icon name="close" size="18" />
         </router-link>
       </template>
     </van-nav-bar>
+    <van-notice-bar v-if="['stop', 'end'].includes(projectStatus)"  mode="closeable" left-icon="info-o">
+      当前项目已{{ projectStatusDesc }}。您只能浏览项目信息!
+    </van-notice-bar>
     <router-view> </router-view>
     <van-popup
       v-model:show="showPopup"
@@ -79,7 +72,9 @@ const props = defineProps({
 });
 
 const title = toRef(props.detail, "projectName");
-const projectId = toRef(props, "projectId");
+const projectStatus = toRef(props.detail, "projectStatus")
+const projectStatusDesc = toRef(props.detail, "projectStatusDesc")
+const projectId = toRef(props, "projectId"); 
 
 provide("project", props.detail);
 provide("projectId", props.projectId);
@@ -87,7 +82,9 @@ provide("menu", props.menu);
 provide("mem", props.mem);
 provide("center", props.center);
 
+
 onBeforeRouteUpdate(() => {
+  console.log(props.detail.projectName)
   showPopup.value = false;
 });
 </script>

@@ -26,7 +26,9 @@ const app = createApp({
     },
     '$store.state.user.userInfo': {
       handler(val) {
-        useRefreshToken()
+        if(val && Object.hasOwn(val, 'refreshToken')){
+          useRefreshToken()
+        }
       }
     },
     '$store.state.system.title': {
